@@ -1,25 +1,19 @@
 {
   "name": "cartola-elifoot",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "Football management game inspired by Elifoot using Cartola FC data",
+  "main": "server.js",
   "type": "module",
-  "description": "Football management game combining Elifoot gameplay with real Cartola FC data",
-  "engines": {
-    "node": ">=16.0.0"
-  },
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage --verbose"
+    "dev": "node server.js"
   },
   "dependencies": {
-    "body-parser": "^1.20.2",
+    "express": "^4.18.2",
     "cors": "^2.8.5",
-    "express": "^4.18.0",
-    "node-fetch": "^2.6.11"
+    "node-fetch": "^3.3.0"
   },
-  "devDependencies": {
-    "jest": "^30.4.2",
-    "jest-environment-jsdom": "^30.4.1",
-    "jsdom": "^29.1.1"
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
