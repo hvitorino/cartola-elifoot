@@ -151,8 +151,8 @@
           const info = document.createElement('div');
           info.className = 'player-card__info';
           info.innerHTML = `
-            <div class="text-bold text-primary">${jogador.nome}</div>
-            <div class="text-sm text-secondary">Média: ${jogador.media_num.toFixed(1)}</div>
+            <div style="font-weight: 600; text-primary">${jogador.nome}</div>
+            <div style="font-size: 0.9rem; text-secondary">Média: ${jogador.media_num.toFixed(1)}</div>
           `;
 
           card.appendChild(info);
