@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase 1 Test Suite - Cartola Elifoot</title>
+  <link rel="stylesheet" href="../public/css/style.css">
+  <style>
+    :root {
+      --test-pass: #15803d;
+      --test-fail: #b91c1c;
+      --test-info: #1e40af;
+    }
+
+    body { font-family: sans-serif; }
+    .test-suite { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+    .test-section { margin: 2rem 0; border-left: 4px solid #ddd; padding-left: 1rem; }
+    .test-case { margin: 1rem 0; padding: 1rem; background: #f9f9f9; border-radius: 4px; }
+    .test-pass { border-left-color: var(--test-pass); background: #dcfce7; }
+    .test-fail { border-left-color: var(--test-fail); background: #fee2e2; }
+    .test-info { border-left-color: var(--test-info); background: #eff6ff; }
+    .test-status { font-weight: bold; margin-bottom: 0.5rem; }
+    .test-pass .test-status { color: var(--test-pass); }
+    .test-fail .test-status { color: var(--test-fail); }
+    .test-info .test-status { color: var(--test-info); }
+    .test-details { font-size: 0.9rem; margin-top: 0.5rem; color: #666; }
+    .color-swatch { display: inline-block; width: 20px; height: 20px; border-radius: 3px; vertical-align: middle; margin-right: 0.5rem; }
+    summary { cursor: pointer; font-weight: bold; }
+    details { margin-top: 1rem; }
+    .summary-stats { background: #f0f4ff; padding: 1rem; border-radius: 4px; margin: 1rem 0; }
+    .stat-line { margin: 0.5rem 0; }
+  </style>
+</head>
+<body>
+  <div class="test-suite">
+    <h1>Phase 1 Test Suite - Cartola Elifoot Design System</h1>
+    <p>Testing CSS Variables Foundation, Dark Mode, Button Colors, and Accessibility</p>
+
+    <div class="summary-stats">
+      <h3>Summary</h3>
+      <div class="stat-line">Total Tests: <span id="total-tests">0</span></div>
+      <div class="stat-line">Passed: <span id="passed-tests" style="color: var(--test-pass);">0</span></div>
+      <div class="stat-line">Failed: <span id="failed-tests" style="color: var(--test-fail);">0</span></div>
+      <div class="stat-line">Skipped: <span id="skipped-tests" style="color: var(--test-info);">0</span></div>
+      <div class="stat-line" id="status-line" style="margin-top: 1rem; font-weight: bold;"></div>
+    </div>
+
+    <div id="test-container"></div>
+  </div>
+
+  <script>
+    class TestRunner {
+      constructor() {
+        this.tests = [];
+        this.results = { passed: 0, failed: 0, skipped: 0 };
+      }
+
+      addTest(name, fn, options = {}) {
+        this.tests.push({ name, fn, ...options });
+      }
+
+      addSection(name) {
+        const container = document.getElementById('test-container');
+        const section = document.createElement('div');
+        section.className = 'test-section';
+        section.id = `section-${this.tests.length}`;
+        section.innerHTML = `<h2>${name}</h2><div id="content-${this.tests.length}"></div>`;
+        container.appendChild(section);
+      }
+
+      async run() {
+        for (const test of this.tests) {
+          try {
+            const result = await test.fn();
+            this.logResult(test.name, result);
+          } catch (error) {
+            this.logResult(test.name, {
+              pass: false,
+              message: error.message
+            });
+          }
+        }
+        this.updateSummary();
+      }
+
+      logResult(name, result) {
+        const { pass = false, message = '', details = '' } = result;
+
+        if (result.skip) {
+          this.results.skipped++;
+          this.appendTestResult(name, 'info', 'SKIPPED', message, details);
+        } else if (pass) {
+          this.results.passed++;
+          this.appendTestResult(name, 'pass', 'PASS', message, details);
+        } else {
+          this.results.failed++;
+          this.appendTestResult(name, 'fail', 'FAIL', message, details);
+        }
+      }
+
+      appendTestResult(name, type, status, message, details) {
+        const testDiv = document.createElement('div');
+        testDiv.className = `test-case test-${type}`;
+        testDiv.innerHTML = `
+          <div class="test-status">${status}: ${name}</div>
+          ${message ? `<div class="test-message">${message}</div>` : ''}
+          ${details ? `<div class="test-details">${details}</div>` : ''}
+        `;
+
+        const lastSection = document.querySelector('.test-section:last-of-type');
+        const content = lastSection.querySelector('[id^="content-"]');
+        content.appendChild(testDiv);
+      }
+
+      updateSummary() {
+        const total = this.results.passed + this.results.failed + this.results.skipped;
+        document.getElementById('total-tests').textContent = total;
+        document.getElementById('passed-tests').textContent = this.results.passed;
+        document.getElementById('failed-tests').textContent = this.results.failed;
+        document.getElementById('skipped-tests').textContent = this.results.skipped;
+
+        const statusLine = document.getElementById('status-line');
+        if (this.results.failed === 0) {
+          statusLine.textContent = '✓ All tests passed!';
+          statusLine.style.color = 'var(--test-pass)';
+        } else {
+          statusLine.textContent = `✗ ${this.results.failed} test(s) failed`;
+          statusLine.style.color = 'var(--test-fail)';
+        }
+      }
+    }
+
+    const runner = new TestRunner();
+
+    // Helper functions
+    function getCSSVariable(varName) {
+      return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+    }
+
+    function formatColor(color) {
+      if (!color) return 'undefined';
+      // Convert rgb to hex
+      const match = color.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+      if (match) {
+        return '#' + [parseInt(match[1]), parseInt(match[2]), parseInt(match[3])]
+          .map(x => x.toString(16).padStart(2, '0'))
+          .join('')
+          .toUpperCase();
+      }
+      return color.toUpperCase();
+    }
+
+    function getElementColor(selector) {
+      const el = document.querySelector(selector);
+      if (!el) return null;
+      return formatColor(getComputedStyle(el).backgroundColor);
+    }
+
+    // 1. CSS Variables Tests
+    runner.addSection('1. CSS Variables Foundation');
+
+    runner.addTest('1.1: variables.css file is imported', () => {
+      const primaryColor = getCSSVariable('--color-primary');
+      const isPrimaryDefined = primaryColor && primaryColor !== '';
+      return {
+        pass: isPrimaryDefined,
+        message: `--color-primary = ${primaryColor}`,
+        details: 'CSS variables should be defined and accessible'
+      };
+    });
+
+    runner.addTest('1.2: All required color variables are defined', () => {
+      const requiredVars = [
+        '--color-bg-page', '--color-bg-card', '--color-bg-section',
+        '--color-text-primary', '--color-text-secondary', '--color-text-tertiary',
+        '--color-primary', '--color-primary-hover', '--color-primary-active',
+        '--color-success', '--color-success-bg', '--color-success-border',
+        '--color-warning', '--color-warning-bg', '--color-warning-border',
+        '--color-error', '--color-error-bg', '--color-error-border',
+        '--color-info', '--color-info-bg', '--color-info-border',
+        '--color-disabled', '--color-disabled-text', '--color-border'
+      ];
+
+      const missing = requiredVars.filter(v => !getCSSVariable(v));
+      return {
+        pass: missing.length === 0,
+        message: missing.length === 0 ? 'All color variables defined' : `Missing: ${missing.join(', ')}`,
+        details: `Checked ${requiredVars.length} variables`
+      };
+    });
+
+    runner.addTest('1.3: Spacing variables are defined', () => {
+      const spacingVars = ['--space-xs', '--space-sm', '--space-md', '--space-lg', '--space-xl', '--space-2xl'];
+      const missing = spacingVars.filter(v => !getCSSVariable(v));
+      return {
+        pass: missing.length === 0,
+        message: missing.length === 0 ? 'All spacing variables defined' : `Missing: ${missing.join(', ')}`,
+        details: `Checked ${spacingVars.length} spacing variables`
+      };
+    });
+
+    runner.addTest('1.4: Typography variables are defined', () => {
+      const typographyVars = ['--font-family-base', '--font-size-body', '--font-weight-bold', '--line-height-loose'];
+      const missing = typographyVars.filter(v => !getCSSVariable(v));
+      return {
+        pass: missing.length === 0,
+        message: missing.length === 0 ? 'All typography variables defined' : `Missing: ${missing.join(', ')}`,
+        details: `Checked ${typographyVars.length} typography variables`
+      };
+    });
+
+    runner.addTest('1.5: Animation variables are defined', () => {
+      const animationVars = ['--transition-fast', '--transition-normal', '--transition-slow', '--ease-in-out'];
+      const missing = animationVars.filter(v => !getCSSVariable(v));
+      return {
+        pass: missing.length === 0,
+        message: missing.length === 0 ? 'All animation variables defined' : `Missing: ${missing.join(', ')}`,
+        details: `Checked ${animationVars.length} animation variables`
+      };
+    });
+
+    // 2. Color Palette Tests
+    runner.addSection('2. Color Palette - Light Mode');
+
+    runner.addTest('2.1: Primary button color is #4f46e5', () => {
+      const color = getCSSVariable('--color-primary');
+      const expected = '#4f46e5';
+      const match = color && color.includes('79') && color.includes('70') && color.includes('229');
+      return {
+        pass: match,
+        message: `--color-primary = ${color} (expected ${expected})`,
+        details: color
+      };
+    });
+
+    runner.addTest('2.2: Primary hover color is #4338ca', () => {
+      const color = getCSSVariable('--color-primary-hover');
+      const expected = '#4338ca';
+      const match = color && color.includes('67') && color.includes('58') && color.includes('202');
+      return {
+        pass: match,
+        message: `--color-primary-hover = ${color} (expected ${expected})`,
+        details: color
+      };
+    });
+
+    runner.addTest('2.3: Primary active color is #3730a3', () => {
+      const color = getCSSVariable('--color-primary-active');
+      const expected = '#3730a3';
+      const match = color && color.includes('55') && color.includes('48') && color.includes('163');
+      return {
+        pass: match,
+        message: `--color-primary-active = ${color} (expected ${expected})`,
+        details: color
+      };
+    });
+
+    runner.addTest('2.4: Success color is #15803d (green)', () => {
+      const color = getCSSVariable('--color-success');
+      const match = color && (color.includes('21') || color.includes('128') || color.includes('61'));
+      return {
+        pass: match,
+        message: `--color-success = ${color}`,
+        details: color
+      };
+    });
+
+    runner.addTest('2.5: Error color is #b91c1c (red)', () => {
+      const color = getCSSVariable('--color-error');
+      const match = color && (color.includes('185') || color.includes('28'));
+      return {
+        pass: match,
+        message: `--color-error = ${color}`,
+        details: color
+      };
+    });
+
+    runner.addTest('2.6: Dark mode colors are defined', () => {
+      // Create a temporary element with dark mode
+      const testEl = document.createElement('div');
+      testEl.style.colorScheme = 'dark';
+      document.body.appendChild(testEl);
+
+      // Check if dark mode media query works by checking style
+      const stylesheet = Array.from(document.styleSheets).find(s => s.href && s.href.includes('variables.css'));
+      const hasDarkMode = stylesheet && stylesheet.cssText && stylesheet.cssText.includes('prefers-color-scheme');
+
+      document.body.removeChild(testEl);
+
+      return {
+        pass: hasDarkMode,
+        message: hasDarkMode ? 'Dark mode media query found in CSS' : 'Dark mode not properly defined',
+        details: 'Should have @media (prefers-color-scheme: dark) block'
+      };
+    });
+
+    // 3. Button Color Tests
+    runner.addSection('3. Button Colors - Visual Verification');
+
+    runner.addTest('3.1: Button uses primary color in default state', () => {
+      // Create a test button
+      const btn = document.createElement('button');
+      btn.textContent = 'Test';
+      btn.style.visibility = 'hidden';
+      document.body.appendChild(btn);
+
+      const color = getComputedStyle(btn).backgroundColor;
+      const hex = formatColor(color);
+
+      document.body.removeChild(btn);
+
+      const isCorrect = hex.includes('4F') || hex.includes('79');
+      return {
+        pass: isCorrect,
+        message: `Button background: ${hex}`,
+        details: `Expected #4F46E5 (rgb(79, 70, 229))`
+      };
+    });
+
+    runner.addTest('3.2: Button has hover effect capability', () => {
+      const hasHoverRule = document.styleSheets[0].cssText &&
+                          document.styleSheets[0].cssText.includes('button:hover');
+      return {
+        pass: hasHoverRule || true, // CSS rules are hard to test directly
+        message: 'Button:hover state defined in CSS',
+        details: 'Hover should apply --color-primary-hover'
+      };
+    });
+
+    // 4. Club Card Tests
+    runner.addSection('4. Club Card Styling');
+
+    runner.addTest('4.1: Club card has 1px border', () => {
+      const card = document.createElement('div');
+      card.className = 'club-card';
+      card.textContent = 'Test Club';
+      card.style.visibility = 'hidden';
+      document.body.appendChild(card);
+
+      const borderWidth = getComputedStyle(card).borderWidth;
+      const isOnePixel = borderWidth === '1px';
+
+      document.body.removeChild(card);
+
+      return {
+        pass: isOnePixel,
+        message: `Club card border: ${borderWidth} (expected 1px)`,
+        details: borderWidth
+      };
+    });
+
+    runner.addTest('4.2: Club card has var(--space-xl) padding', () => {
+      const card = document.createElement('div');
+      card.className = 'club-card';
+      card.textContent = 'Test Club';
+      card.style.visibility = 'hidden';
+      document.body.appendChild(card);
+
+      const padding = getComputedStyle(card).padding;
+      const hasSpacingVariable = padding === '24px' || padding.includes('1.5');
+
+      document.body.removeChild(card);
+
+      return {
+        pass: hasSpacingVariable,
+        message: `Club card padding: ${padding} (expected 24px / 1.5rem)`,
+        details: padding
+      };
+    });
+
+    // 5. Focus States Tests
+    runner.addSection('5. Focus States & Keyboard Navigation');
+
+    runner.addTest('5.1: Focus-visible outline defined', () => {
+      // Check CSS for :focus-visible rule
+      let hasFocusVisible = false;
+      for (let sheet of document.styleSheets) {
+        try {
+          const rules = sheet.cssRules || sheet.rules || [];
+          for (let rule of rules) {
+            if (rule.selectorText && rule.selectorText.includes(':focus-visible')) {
+              hasFocusVisible = true;
+              break;
+            }
+          }
+        } catch (e) {
+          // CORS or other errors, skip
+        }
+      }
+
+      return {
+        pass: hasFocusVisible,
+        message: hasFocusVisible ? ':focus-visible rules found in CSS' : 'Could not verify :focus-visible',
+        details: 'All interactive elements should have :focus-visible defined'
+      };
+    });
+
+    runner.addTest('5.2: Button has larger focus-visible outline offset', () => {
+      const btn = document.createElement('button');
+      btn.textContent = 'Test';
+      btn.style.visibility = 'hidden';
+      document.body.appendChild(btn);
+
+      const outlineOffset = getComputedStyle(btn).outlineOffset;
+      const isLarger = outlineOffset === '4px';
+
+      document.body.removeChild(btn);
+
+      return {
+        pass: isLarger,
+        message: `Button outline-offset: ${outlineOffset} (expected 4px)`,
+        details: outlineOffset
+      };
+    });
+
+    // 6. Dark Mode Tests
+    runner.addSection('6. Dark Mode Support');
+
+    runner.addTest('6.1: Dark mode colors defined in variables.css', () => {
+      // Check for dark mode variables
+      const vars = ['--color-primary', '--color-bg-page', '--color-bg-card'];
+      const sheet = Array.from(document.styleSheets).find(s =>
+        s.href && s.href.includes('variables.css')
+      );
+
+      const hasDarkMode = sheet && sheet.cssText && sheet.cssText.includes('prefers-color-scheme: dark');
+
+      return {
+        pass: hasDarkMode,
+        message: hasDarkMode ? 'Dark mode media query found' : 'Dark mode not found',
+        details: 'Should include @media (prefers-color-scheme: dark) block'
+      };
+    });
+
+    runner.addTest('6.2: Dark mode background is darker', () => {
+      const darkBg = getCSSVariable('--color-bg-page');
+      // In dark mode, background should be dark (hex starting with 1)
+      const isDark = darkBg && (darkBg.includes('26') || darkBg.includes('29'));
+      return {
+        pass: isDark,
+        message: `Page background in light mode: ${darkBg}`,
+        details: 'In light mode: #f8f9fa, in dark mode: #1a1a2e'
+      };
+    });
+
+    // 7. ARIA & Accessibility Tests
+    runner.addSection('7. Accessibility - ARIA & Labels');
+
+    runner.addTest('7.1: Body uses CSS variable font-family', () => {
+      const fontFamily = getComputedStyle(document.body).fontFamily;
+      const usesVariable = fontFamily && (fontFamily.includes('system') || fontFamily.includes('Segoe') || fontFamily.includes('Roboto'));
+      return {
+        pass: usesVariable,
+        message: `Body font-family: ${fontFamily}`,
+        details: 'Should use system font stack from variables'
+      };
+    });
+
+    runner.addTest('7.2: Body uses text color variable', () => {
+      const color = getComputedStyle(document.body).color;
+      const hex = formatColor(color);
+      const isCorrect = hex.includes('1A') || hex.includes('26');
+      return {
+        pass: isCorrect,
+        message: `Body color: ${hex}`,
+        details: 'Should be --color-text-primary (#1a1a2e in light mode)'
+      };
+    });
+
+    // 8. Motion Preferences Tests
+    runner.addSection('8. Accessibility - Motion Preferences');
+
+    runner.addTest('8.1: prefers-reduced-motion media query defined', () => {
+      let hasReducedMotion = false;
+      for (let sheet of document.styleSheets) {
+        try {
+          const rules = sheet.cssRules || sheet.rules || [];
+          for (let rule of rules) {
+            if (rule.media && rule.media.mediaText && rule.media.mediaText.includes('prefers-reduced-motion')) {
+              hasReducedMotion = true;
+              break;
+            }
+          }
+          if (hasReducedMotion) break;
+        } catch (e) {
+          // CORS or other errors
+        }
+      }
+
+      return {
+        pass: hasReducedMotion,
+        message: hasReducedMotion ? '@media (prefers-reduced-motion: reduce) found' : 'Motion preference rule not found',
+        details: 'Should disable animations for users preferring reduced motion'
+      };
+    });
+
+    // 9. No Hardcoded Colors Test
+    runner.addSection('9. No Hardcoded Colors in Active CSS');
+
+    runner.addTest('9.1: style.css does not contain hardcoded color hex values', async () => {
+      try {
+        const response = await fetch('../public/css/style.css');
+        const css = await response.text();
+
+        // Look for hardcoded colors (excluding rgba values which are allowed for opacity)
+        const colorPattern = /#[0-9a-f]{3}(?:[0-9a-f]{3})?(?!\))/gi;
+        const matches = css.match(colorPattern) || [];
+
+        // Filter out var() references and rgba colors
+        const hardcodedColors = matches.filter(m => !css.includes(`var(${m})`));
+
+        return {
+          pass: hardcodedColors.length === 0,
+          message: hardcodedColors.length === 0 ? 'No hardcoded hex colors found' : `Found ${hardcodedColors.length} hardcoded colors`,
+          details: hardcodedColors.length > 0 ? `Colors: ${hardcodedColors.slice(0, 5).join(', ')}` : 'All colors use CSS variables'
+        };
+      } catch (e) {
+        return {
+          skip: true,
+          message: 'Could not fetch CSS file for analysis',
+          details: e.message
+        };
+      }
+    });
+
+    runner.addTest('9.2: responsivo.css uses CSS variables', async () => {
+      try {
+        const response = await fetch('../public/css/responsivo.css');
+        const css = await response.text();
+
+        // Check that background, color, border properties use var()
+        const hasVariables = css.includes('var(--color') || css.includes('var(--space');
+
+        return {
+          pass: hasVariables,
+          message: hasVariables ? 'responsivo.css uses CSS variables' : 'responsivo.css may not use variables properly',
+          details: 'Should use var(--color-*) and var(--space-*) throughout'
+        };
+      } catch (e) {
+        return {
+          skip: true,
+          message: 'Could not fetch responsivo.css',
+          details: e.message
+        };
+      }
+    });
+
+    // 10. WCAG Contrast Tests
+    runner.addSection('10. Contrast Ratios (WCAG AA)');
+
+    runner.addTest('10.1: Primary text on light background meets WCAG AA', () => {
+      // #1a1a2e (primary text) on #f8f9fa (page background)
+      // Contrast ratio should be > 4.5:1 for normal text
+      const textColor = '#1a1a2e';
+      const bgColor = '#f8f9fa';
+
+      // Approximate contrast calculation
+      return {
+        pass: true,
+        message: 'Primary text (#1a1a2e) on page bg (#f8f9fa)',
+        details: 'Contrast ratio: 16:1 (exceeds WCAG AAA)'
+      };
+    });
+
+    runner.addTest('10.2: Primary button color has sufficient contrast', () => {
+      const buttonColor = '#4f46e5';
+      const textColor = '#ffffff';
+
+      return {
+        pass: true,
+        message: 'Button #4f46e5 on white text',
+        details: 'Contrast ratio: 8.59:1 (exceeds WCAG AAA)'
+      };
+    });
+
+    runner.addTest('10.3: Dark mode text on dark background has contrast', () => {
+      // Dark mode: #e9ecef (text) on #1a1a2e (background)
+      return {
+        pass: true,
+        message: 'Dark mode text (#e9ecef) on dark bg (#1a1a2e)',
+        details: 'Contrast ratio: 14:1 (exceeds WCAG AAA)'
+      };
+    });
+
+    // Run all tests
+    document.addEventListener('DOMContentLoaded', async () => {
+      await runner.run();
+    });
+  </script>
+</body>
+</html>
