@@ -48,11 +48,12 @@
 
         clubs.forEach(club => {
           const card = document.createElement('div');
-          card.className = 'card card-elevated player-card hover:shadow-md transition-shadow';
+          card.className = 'card elevated';
+          card.style.cssText = 'cursor: pointer; padding: var(--space-lg);';
           card.innerHTML = `
-            <div class="card__icon" style="font-size: 2rem; margin-bottom: var(--space-md);">⚽</div>
-            <div class="text-bold text-primary">${club.nome}</div>
-            <div class="text-sm text-secondary">${club.abreviacao}</div>
+            <div style="font-size: 2rem; margin-bottom: var(--space-md);">⚽</div>
+            <div style="color: var(--text-primary); font-weight: 600; margin-bottom: var(--space-sm);">${club.nome}</div>
+            <div style="color: var(--text-secondary); font-size: 0.9rem;">${club.abreviacao}</div>
           `;
 
           card.addEventListener('click', () => {
