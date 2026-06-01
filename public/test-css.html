@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Test - Cartola Elifoot</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <style>
+    body { padding: 40px; }
+    .test-box {
+      padding: 20px;
+      margin: 20px 0;
+      border: 2px solid white;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎨 CSS Design System Test</h1>
+
+  <div class="test-box" style="background-color: var(--dark-bg-secondary); color: var(--text-primary);">
+    <h2>✅ Se você vê fundo escuro + texto claro aqui = CSS carregando</h2>
+    <p>Background: var(--dark-bg-secondary)</p>
+  </div>
+
+  <div class="test-box" style="background-color: var(--dark-bg-primary); color: var(--primary-accent);">
+    <h2>✅ Se você vê AZUL VIBRANTE (#4a9eff) aqui = Cores carregando</h2>
+    <p>Color: var(--primary-accent)</p>
+  </div>
+
+  <div class="test-box" style="background-color: var(--dark-bg-primary); color: var(--secondary-accent);">
+    <h2>✅ Se você vê VERDE (#6bbf59) aqui = Success color carregando</h2>
+    <p>Color: var(--secondary-accent)</p>
+  </div>
+
+  <div class="test-box" style="background-color: var(--dark-bg-primary); color: var(--danger-accent);">
+    <h2>✅ Se você vê VERMELHO (#ff5c5c) aqui = Danger color carregando</h2>
+    <p>Color: var(--danger-accent)</p>
+  </div>
+
+  <div class="test-box" style="background-color: var(--dark-bg-primary); font-family: var(--font-mono); font-size: 24px; color: var(--text-highlight);">
+    <h2>✅ Se você vê monospace aqui = IBM Plex Mono carregando</h2>
+    <p>123456789 - Monospace Font Test</p>
+  </div>
+
+  <h2>Debug Info:</h2>
+  <pre id="debug"></pre>
+
+  <script>
+    document.getElementById('debug').textContent = `
+CSS Variables Test:
+- dark-bg-primary: ${getComputedStyle(document.documentElement).getPropertyValue('--dark-bg-primary').trim()}
+- primary-accent: ${getComputedStyle(document.documentElement).getPropertyValue('--primary-accent').trim()}
+- text-primary: ${getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim()}
+- font-body: ${getComputedStyle(document.documentElement).getPropertyValue('--font-body').trim()}
+
+Body Styles:
+- Background: ${getComputedStyle(document.body).backgroundColor}
+- Color: ${getComputedStyle(document.body).color}
+- Font-Family: ${getComputedStyle(document.body).fontFamily}
+    `.trim();
+  </script>
+</body>
+</html>
