@@ -3,75 +3,74 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cartola Elifoot - Selecione um Clube</title>
+  <title>Cartola Elifoot — Selecione um Clube</title>
   <link rel="stylesheet" href="/css/main.css">
 </head>
-<body>
-  <header>
-    <h1>Cartola Elifoot</h1>
-    <p>Gerencie seu clube, escalações e partidas!</p>
-  </header>
+<body class="page-wrapper">
 
-  <div class="container">
-    <h2>Escolha um Clube para Gerenciar</h2>
+  <nav class="app-nav">
+    <a href="/" class="app-nav__logo">⚽ Cartola Elifoot</a>
+    <span class="app-nav__season">Temporada 2026 · Série A</span>
+  </nav>
 
-    <div id="loading" class="spinner" style="display: none;"></div>
+  <div class="page-content">
+    <div class="page-header">
+      <h1>Escolha seu Clube</h1>
+      <p>Selecione um clube da Série A para gerenciar durante a temporada</p>
+    </div>
 
-    <div id="error" class="error error-alert"></div>
+    <div id="loading" class="state-loading" style="display:none;">
+      <div class="spinner"></div>
+      <span>Carregando clubes...</span>
+    </div>
 
-    <div id="clubs-container" class="clubs-grid grid grid-cols-auto gap-lg"></div>
+    <div id="error" style="display:none;" class="alert alert-danger"></div>
 
-    <p id="fallback-text" class="text-secondary" style="display: none;">Escolha um clube da lista</p>
+    <div id="clubs-container" class="club-select-grid"></div>
   </div>
 
   <script type="module">
     import * as api from './js/api.js';
     import * as estado from './js/estado.js';
 
-    async function inicializarPagina() {
+    const CLUB_EMOJIS = {
+      1:'🔴',2:'💚',3:'⚫',4:'⚫',5:'⚫',6:'⭐',7:'⚫',8:'🔴',9:'💙',
+      10:'⚫',11:'🔵',12:'🔴',13:'🔵',14:'🔵',15:'🟢',16:'🟡',
+      17:'🟢',18:'🔴',19:'🔵',20:'🔴',
+    };
+
+    async function init() {
       const loading = document.getElementById('loading');
-      const error = document.getElementById('error');
-      const clubsContainer = document.getElementById('clubs-container');
-      const fallbackText = document.getElementById('fallback-text');
+      const errorEl = document.getElementById('error');
+      const container = document.getElementById('clubs-container');
 
-      loading.style.display = 'block';
-
+      loading.style.display = 'flex';
       try {
         const clubs = await api.getClubs();
-
-        if (!clubs || clubs.length === 0) {
-          throw new Error('No clubs returned');
-        }
-
         loading.style.display = 'none';
-
         clubs.forEach(club => {
           const card = document.createElement('div');
-          card.className = 'card elevated';
-          card.style.cssText = 'cursor: pointer; padding: var(--space-lg);';
+          card.className = 'club-card';
           card.innerHTML = `
-            <div style="font-size: 2rem; margin-bottom: var(--space-md);">⚽</div>
-            <div style="color: var(--text-primary); font-weight: 600; margin-bottom: var(--space-sm);">${club.nome}</div>
-            <div style="color: var(--text-secondary); font-size: 0.9rem;">${club.abreviacao}</div>
+            <div class="club-card__badge">${CLUB_EMOJIS[club.id] || '🏆'}</div>
+            <div class="club-card__name">${club.nome}</div>
+            <div class="club-card__abbr">${club.abreviacao}</div>
           `;
-
           card.addEventListener('click', () => {
-            estado.setEstado({ clubeId: club.id });
+            estado.setEstado({ clubeId: club.id, nomeClube: club.nome, abrevClube: club.abreviacao });
             window.location.href = 'escalacao.html';
           });
-
-          clubsContainer.appendChild(card);
+          container.appendChild(card);
         });
       } catch (err) {
-        console.error('Error loading clubs:', err);
         loading.style.display = 'none';
-        error.textContent = 'Erro ao carregar clubes. Usando dados de fallback.';
-        error.classList.add('show');
-        fallbackText.style.display = 'block';
+        errorEl.textContent = 'Erro ao carregar clubes.';
+        errorEl.style.display = 'block';
+        console.error(err);
       }
     }
 
-    inicializarPagina();
+    init();
   </script>
 </body>
 </html>

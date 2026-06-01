@@ -27,6 +27,9 @@
 /* Animations & Transitions */
 @import './_animations.css';
 
+/* Page-level shared layouts */
+@import './_pages.css';
+
 /* Optional: Dark Mode Overrides (if light mode needed) */
 /* @import './dark-mode.css'; */
 

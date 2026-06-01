@@ -3,121 +3,207 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cartola Elifoot - Simulação</title>
+  <title>Cartola Elifoot — Simulação</title>
   <link rel="stylesheet" href="/css/main.css">
 </head>
-<body>
-  <header>
-    <h1 id="match-header">Partida em Andamento</h1>
-    <div id="match-status" class="text-highlight">Gerando simulação...</div>
-  </header>
+<body class="page-wrapper">
 
-  <div class="container">
-    <div class="score score-large" id="score">0 — 0</div>
+  <nav class="app-nav">
+    <a href="/" class="app-nav__logo">⚽ Cartola Elifoot</a>
+    <div class="app-nav__links">
+      <a href="escalacao.html" class="app-nav__link">Escalação</a>
+      <a href="rodada.html" class="app-nav__link">Rodada</a>
+    </div>
+    <span class="app-nav__season" id="nav-club">—</span>
+  </nav>
 
-    <div id="match-indicator" class="spinner flex flex-center" style="margin: var(--space-md) 0;"></div>
+  <!-- Match Score Hero -->
+  <div class="match-progress"><div class="match-progress__bar" id="match-progress" style="width:0%"></div></div>
+  <div class="match-score-hero">
+    <div class="match-score-hero__team">
+      <div class="match-score-hero__team-name" id="home-team">—</div>
+      <div class="match-score-hero__team-abbr" id="home-abbr">???</div>
+    </div>
+    <div>
+      <div class="match-score-hero__scores">
+        <div class="match-score-hero__score" id="score-home">0</div>
+        <div class="match-score-hero__sep">×</div>
+        <div class="match-score-hero__score" id="score-away">0</div>
+      </div>
+      <div class="match-score-hero__status" id="match-status">Aguardando...</div>
+    </div>
+    <div class="match-score-hero__team">
+      <div class="match-score-hero__team-name" id="away-team">—</div>
+      <div class="match-score-hero__team-abbr" id="away-abbr">???</div>
+    </div>
+  </div>
 
-    <div id="naracao"></div>
+  <div class="page-content">
+    <div class="simulacao-layout">
+      <!-- Timeline -->
+      <div class="section-card">
+        <div class="section-card__header">
+          <span class="section-card__title">Lances da Partida</span>
+          <span id="minute-badge" class="section-card__badge">0'</span>
+        </div>
+        <div class="section-card__body section-card__body--no-pad">
+          <div id="timeline" style="max-height:480px;overflow-y:auto;padding:var(--space-md);display:flex;flex-direction:column;gap:var(--space-sm);"></div>
+          <div id="timeline-empty" class="state-empty"><div class="state-empty__icon">⏳</div><div class="state-empty__text">A partida vai começar...</div></div>
+        </div>
+      </div>
 
-    <div class="flex flex-center" style="margin: var(--space-xl) 0;">
-      <button id="next-button" class="btn btn-primary btn-lg" onclick="irParaResultado()" style="display: none;">
-        Ver Resultado &gt;
-      </button>
+      <!-- Stats + Actions -->
+      <div style="display:flex;flex-direction:column;gap:var(--space-lg);">
+        <!-- Stats Panel -->
+        <div class="section-card">
+          <div class="section-card__header">
+            <span class="section-card__title">Estatísticas</span>
+          </div>
+          <div class="section-card__body" id="stats-container">
+            <div class="state-empty"><div class="state-empty__text">Em andamento...</div></div>
+          </div>
+        </div>
+
+        <!-- Action -->
+        <div class="section-card" id="finish-section" style="display:none;">
+          <div class="section-card__body" style="text-align:center;padding:var(--space-xl);">
+            <div id="result-outcome" style="font-size:var(--h2-size);font-weight:700;margin-bottom:var(--space-md);"></div>
+            <div id="result-score-final" style="font-family:var(--font-mono);font-size:3rem;font-weight:700;color:var(--text-highlight);margin-bottom:var(--space-lg);"></div>
+            <a href="resultado.html" class="btn btn-primary btn-lg">Ver Resultado Completo</a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
   <script type="module">
     import * as api from './js/api.js';
     import * as estado from './js/estado.js';
-    import * as simulacao from './js/simulacao.js';
-    import * as narracao from './js/narracao.js';
+    import { gerarPartida } from './js/simulacao.js';
+    import * as mockData from './js/mock_data.js';
 
-    let matchData = null;
+    const ADVERSARIOS = ['Flamengo','Palmeiras','São Paulo','Corinthians','Santos','Botafogo','Vasco','Fluminense','Cruzeiro','Atlético MG'];
+    const TIPO_ICON = { gol:'⚽', chute_fora:'↗', chute_defendido:'🧤', escanteio:'🚩', falta:'⚠️', lateral:'➡️' };
+    const TIPO_COLOR = { gol:'var(--secondary-accent)', chute_fora:'var(--text-secondary)', chute_defendido:'var(--warning-accent)', escanteio:'var(--text-tertiary)', falta:'var(--danger-accent)' };
 
-    async function inicializarPagina() {
-      const estadoAtual = estado.getEstado();
+    function addEvent(lance, isHome) {
+      const timeline = document.getElementById('timeline');
+      document.getElementById('timeline-empty').style.display = 'none';
+      const color = TIPO_COLOR[lance.tipo] || 'var(--text-secondary)';
+      const icon  = TIPO_ICON[lance.tipo] || '▶';
+      const side  = isHome ? 'left' : 'right';
 
-      if (!estadoAtual.escalacaoAtual || estadoAtual.escalacaoAtual.length === 0) {
-        window.location.href = 'escalacao.html';
-        return;
-      }
+      const el = document.createElement('div');
+      el.style.cssText = `display:flex;align-items:flex-start;gap:var(--space-sm);${side==='right'?'flex-direction:row-reverse;text-align:right;':''}`;
+      el.innerHTML = `
+        <div style="width:28px;height:28px;border-radius:50%;background-color:${color};opacity:0.9;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">${icon}</div>
+        <div style="flex:1;">
+          <div style="font-size:var(--body-small-size);color:var(--text-tertiary);font-family:var(--font-mono);">${lance.minuto || 0}'</div>
+          <div style="font-size:var(--body-regular-size);color:${lance.tipo==='gol'?'var(--text-highlight)':'var(--text-primary)'};">${lance.narracao || lance.tipo}</div>
+          ${lance.atacante ? `<div style="font-size:var(--body-small-size);color:${color};">${lance.atacante}</div>` : ''}
+        </div>
+      `;
+      timeline.prepend(el);
+    }
 
-      // Load club and opponent info
-      const clubs = await api.getClubs();
-      const clubAtual = clubs.find(c => c.id === estadoAtual.clubeId);
-      const clubName = clubAtual?.nome || 'Seu Time';
+    function renderStats(placar, lances) {
+      const goals   = lances.filter(l => l.tipo === 'gol').length;
+      const fouls   = lances.filter(l => l.tipo === 'falta').length;
+      const shots   = lances.filter(l => ['gol','chute_fora','chute_defendido'].includes(l.tipo)).length;
+      const corners = lances.filter(l => l.tipo === 'escanteio').length;
 
-      // Get opponent (mock for now - using another club)
-      const opponents = clubs.filter(c => c.id !== estadoAtual.clubeId);
-      const opponent = opponents[Math.floor(Math.random() * opponents.length)];
+      document.getElementById('stats-container').innerHTML = `
+        <div style="display:flex;flex-direction:column;gap:var(--space-sm);">
+          ${statRow('Gols', placar.casa, placar.visitante, 'var(--secondary-accent)')}
+          ${statRow('Finalizações', Math.round(shots*0.65), Math.round(shots*0.35), 'var(--primary-accent)')}
+          ${statRow('Faltas', Math.round(fouls*0.45), Math.round(fouls*0.55), 'var(--danger-accent)')}
+          ${statRow('Escanteios', corners, Math.round(corners*0.6), 'var(--warning-accent)')}
+        </div>
+      `;
+    }
 
-      // Create opponent escalacao from available players
-      const todosJogadores = await api.getPlayers();
-      const jogadoresAdversario = todosJogadores.filter(p => p.clube_id === opponent.id).slice(0, 11);
+    function statRow(label, v1, v2, color) {
+      const total = (v1 + v2) || 1;
+      const pct1 = Math.round((v1/total)*100);
+      return `
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+            <span style="font-family:var(--font-mono);font-weight:700;color:${color};">${v1}</span>
+            <span style="font-size:var(--body-small-size);color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.08em;">${label}</span>
+            <span style="font-family:var(--font-mono);font-weight:700;color:var(--text-secondary);">${v2}</span>
+          </div>
+          <div class="progress">
+            <div class="progress-bar" style="width:${pct1}%;background-color:${color};"></div>
+          </div>
+        </div>
+      `;
+    }
 
-      document.getElementById('match-header').textContent = `${clubName} vs ${opponent.nome}`;
+    async function init() {
+      const st = estado.getEstado();
+      document.getElementById('nav-club').textContent = st.nomeClube || '—';
+      document.getElementById('home-team').textContent = st.nomeClube || 'Seu Time';
+      document.getElementById('home-abbr').textContent = st.abrevClube || '???';
 
-      // Generate match
-      matchData = simulacao.gerarPartida(estadoAtual.escalacaoAtual, {
-        nome: opponent.nome,
-        escalacao: jogadoresAdversario
-      });
+      const adversario = ADVERSARIOS[Math.floor(Math.random() * ADVERSARIOS.length)];
+      document.getElementById('away-team').textContent = adversario;
+      document.getElementById('away-abbr').textContent = adversario.slice(0,3).toUpperCase();
 
-      // Store for result page
-      estado.setEstado({
-        ultimaPartida: {
-          escalacao: estadoAtual.escalacaoAtual,
-          adversario: { nome: opponent.nome, escalacao: jogadoresAdversario },
-          lances: matchData.lances,
-          placar: matchData.placar,
-          destaques: matchData.destaques
+      const escalacao = st.escalacaoAtual || mockData.getPlayers().slice(0,11);
+      const resultado = gerarPartida(escalacao, { nome: adversario, escalacao: mockData.getPlayers().slice(0,11) });
+
+      const { lances, placar } = resultado;
+
+      // Store for resultado page
+      estado.setEstado({ ultimaPartida: { lances, placar, adversario, nomeClube: st.nomeClube } });
+
+      let idx = 0;
+      const total = lances.length;
+      document.getElementById('match-status').textContent = 'Jogando...';
+
+      const interval = setInterval(() => {
+        if (idx >= total) {
+          clearInterval(interval);
+          document.getElementById('match-status').textContent = 'Fim de Jogo!';
+          document.getElementById('match-progress').style.width = '100%';
+          document.getElementById('minute-badge').textContent = "90'";
+
+          const diff = placar.casa - placar.visitante;
+          const outcome = diff > 0 ? { text:'Vitória! 🏆', color:'var(--secondary-accent)' } :
+                          diff < 0 ? { text:'Derrota',    color:'var(--danger-accent)' } :
+                                     { text:'Empate',     color:'var(--warning-accent)' };
+          document.getElementById('result-outcome').innerHTML = `<span style="color:${outcome.color};">${outcome.text}</span>`;
+          document.getElementById('result-score-final').textContent = `${placar.casa} × ${placar.visitante}`;
+          document.getElementById('finish-section').style.display = 'block';
+
+          const stats = st.estatisticas || {};
+          const update = diff > 0 ? { vitorias:(stats.vitorias||0)+1 } :
+                         diff < 0 ? { derrotas:(stats.derrotas||0)+1 } :
+                                    { empates:(stats.empates||0)+1 };
+          estado.setEstado({ estatisticas: { ...stats, ...update, gols_pro:(stats.gols_pro||0)+placar.casa, gols_contra:(stats.gols_contra||0)+placar.visitante } });
+          return;
         }
-      });
 
-      // Display plays progressively
-      let delay = 0;
-      matchData.lances.forEach((lance, index) => {
-        setTimeout(() => {
-          const narrativa = narracao.narrarLance(lance);
-          adicionarNarracao(narrativa, lance.tipo);
+        const lance = lances[idx];
+        const isHome = lance.time === (st.nomeClube || 'casa') || lance.timePossui === 'casa';
 
-          // Update score if gol
-          if (lance.resultado === 'gol') {
-            atualizarScore();
-          }
+        if (lance.tipo === 'gol') {
+          if (isHome) document.getElementById('score-home').textContent = placar.casa = (parseInt(document.getElementById('score-home').textContent)||0)+1;
+          else document.getElementById('score-away').textContent = placar.visitante = (parseInt(document.getElementById('score-away').textContent)||0)+1;
+        }
 
-          // If last lance, show next button
-          if (index === matchData.lances.length - 1) {
-            document.getElementById('match-indicator').style.display = 'none';
-            document.getElementById('match-status').textContent = 'Partida finalizada!';
-            document.getElementById('next-button').style.display = 'inline-block';
-          }
-        }, delay);
+        const pct = Math.round((idx/total)*90);
+        document.getElementById('match-progress').style.width = pct + '%';
+        document.getElementById('minute-badge').textContent = pct + "'";
+        document.getElementById('match-status').textContent = pct + "' — Jogando";
+        addEvent(lance, isHome);
+        renderStats({ casa: parseInt(document.getElementById('score-home').textContent)||0, visitante: parseInt(document.getElementById('score-away').textContent)||0 }, lances.slice(0, idx+1));
 
-        delay += 2000; // 2 seconds between plays
-      });
+        idx++;
+      }, 500);
     }
 
-    function adicionarNarracao(texto, tipo) {
-      const narracaoDiv = document.getElementById('naracao');
-      const div = document.createElement('div');
-      div.className = `lance lance-${tipo} match-timeline__event text-sm text-secondary`;
-      div.setAttribute('data-event-type', tipo);
-      div.textContent = texto;
-      narracaoDiv.appendChild(div);
-      narracaoDiv.scrollTop = narracaoDiv.scrollHeight;
-    }
-
-    function atualizarScore() {
-      const scoreDiv = document.getElementById('score');
-      scoreDiv.textContent = `${matchData.placar.casa} — ${matchData.placar.visitante}`;
-    }
-
-    window.irParaResultado = function() {
-      window.location.href = 'resultado.html';
-    };
-
-    inicializarPagina();
+    init();
   </script>
 </body>
 </html>

@@ -3,206 +3,217 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cartola Elifoot - Escalação</title>
+  <title>Cartola Elifoot — Escalação</title>
   <link rel="stylesheet" href="/css/main.css">
 </head>
-<body>
-  <header>
-    <h1 id="club-name">Escalação</h1>
-    <p id="opponent-info"></p>
-  </header>
+<body class="page-wrapper">
 
-  <div class="container">
-    <div class="form-section">
-      <h3 class="form-section__title">Esquema Tático</h3>
-      <div class="form-group">
-        <label class="radio-label">
-          <input type="radio" name="formacao" value="4-4-2" checked class="radio-input">
-          <span class="radio-text">4-4-2 (1 GK, 2 LAT, 2 ZAG, 4 MEI, 2 ATA)</span>
-        </label>
-      </div>
-      <div class="form-group">
-        <label class="radio-label">
-          <input type="radio" name="formacao" value="4-3-3" class="radio-input">
-          <span class="radio-text">4-3-3 (1 GK, 2 LAT, 2 ZAG, 3 MEI, 3 ATA)</span>
-        </label>
-      </div>
-      <div class="form-group">
-        <label class="radio-label">
-          <input type="radio" name="formacao" value="3-5-2" class="radio-input">
-          <span class="radio-text">3-5-2 (1 GK, 3 ZAG, 5 MEI, 2 ATA)</span>
-        </label>
-      </div>
+  <nav class="app-nav">
+    <a href="/" class="app-nav__logo">⚽ Cartola Elifoot</a>
+    <div class="app-nav__links">
+      <a href="rodada.html" class="app-nav__link">Rodada</a>
+    </div>
+    <span class="app-nav__season" id="nav-club">—</span>
+  </nav>
+
+  <div class="page-content">
+    <div class="page-header">
+      <h1>Escalação</h1>
+      <p>Defina a formação e escale seus 11 jogadores titulares</p>
     </div>
 
-    <div class="form-section">
-      <h3 class="form-section__title">Selecione 11 Jogadores</h3>
-      <div id="validation-message" class="validation-message validation-message--error"></div>
-      <div id="players-container" class="players-grid grid grid-cols-2 gap-md"></div>
-    </div>
+    <div class="escalacao-layout">
+      <div>
+        <div class="formation-controls">
+          <label for="formation-select">Formação:</label>
+          <select id="formation-select">
+            <option value="4-3-3">4-3-3 — Ataque Equilibrado</option>
+            <option value="4-4-2">4-4-2 — Clássico</option>
+            <option value="4-2-3-1">4-2-3-1 — Moderno</option>
+            <option value="3-5-2">3-5-2 — Alas</option>
+            <option value="5-3-2">5-3-2 — Defensivo</option>
+          </select>
+          <span id="lineup-count" class="badge badge-info">0 / 11</span>
+        </div>
 
-    <div class="flex flex-center" style="margin: var(--space-xl) 0;">
-      <button id="confirm-button" class="btn btn-primary btn-lg" disabled onclick="confirmarEscalacao()">
-        Confirmar & Simular
-      </button>
-    </div>
+        <div class="section-card">
+          <div class="section-card__header">
+            <span class="section-card__title">Campo Tático</span>
+            <span id="formation-badge" class="section-card__badge">4-3-3</span>
+          </div>
+          <div class="section-card__body" id="formation-board-container"></div>
+        </div>
 
-    <div id="error" class="error error-alert"></div>
+        <div id="validation-msg" style="display:none;margin-top:var(--space-md);" class="alert alert-warning"></div>
+      </div>
+
+      <aside class="player-panel">
+        <div class="section-card__header" style="border-bottom:var(--border-1px);padding:var(--space-md) var(--space-lg);">
+          <span class="section-card__title">Jogadores</span>
+          <span id="players-count" class="section-card__badge">0</span>
+        </div>
+        <div class="player-panel__search">
+          <input type="search" id="player-search" placeholder="Buscar jogador..." autocomplete="off">
+        </div>
+        <div class="player-panel__list" id="players-list">
+          <div class="state-loading"><div class="spinner spinner-sm"></div><span>Carregando...</span></div>
+        </div>
+        <div class="player-panel__footer">
+          <button id="btn-confirm" class="btn btn-primary btn-block" disabled>Confirmar Escalação (0/11)</button>
+        </div>
+      </aside>
+    </div>
   </div>
 
   <script type="module">
     import * as api from './js/api.js';
     import * as estado from './js/estado.js';
 
-    const POSICOES = {
-      1: 'GOL',
-      2: 'LAT',
-      3: 'ZAG',
-      4: 'MEI',
-      5: 'ATA'
+    const POSICAO_LABEL = {1:'GOL',2:'LAT',3:'ZAG',4:'MEI',5:'ATA'};
+    const POSICAO_POS   = {1:'GK', 2:'DF', 3:'DF', 4:'MF', 5:'FW'};
+
+    const state = { clubs:[], allPlayers:[], selectedIds:new Set(), formation:'4-3-3' };
+
+    const formationSelect = document.getElementById('formation-select');
+    const formationBadge  = document.getElementById('formation-badge');
+    const boardContainer  = document.getElementById('formation-board-container');
+    const playersList     = document.getElementById('players-list');
+    const playerSearch    = document.getElementById('player-search');
+    const lineupCount     = document.getElementById('lineup-count');
+    const playersCount    = document.getElementById('players-count');
+    const btnConfirm      = document.getElementById('btn-confirm');
+    const validationMsg   = document.getElementById('validation-msg');
+
+    function renderBoard() {
+      const selected = state.allPlayers.filter(p => state.selectedIds.has(p.atleta_id));
+      const posGroups = {GK:[],DF:[],MF:[],FW:[]};
+      selected.forEach(p => { const g = POSICAO_POS[p.posicao_id]||'MF'; (posGroups[g]=posGroups[g]||[]).push(p); });
+
+      boardContainer.innerHTML = `
+        <div style="position:relative;background:linear-gradient(180deg,#1a3c2e 0%,#1e4a34 50%,#1a3c2e 100%);border-radius:var(--radius-md);overflow:hidden;padding:var(--space-lg) var(--space-md);">
+          <div style="position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;">
+            <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:30%;padding-top:30%;border-radius:50%;border:1px solid rgba(255,255,255,0.08);"></div>
+            <div style="position:absolute;top:50%;left:0;right:0;height:1px;background:rgba(255,255,255,0.08);"></div>
+            <div style="position:absolute;top:10%;left:20%;right:20%;height:12%;border:1px solid rgba(255,255,255,0.08);"></div>
+            <div style="position:absolute;bottom:10%;left:20%;right:20%;height:12%;border:1px solid rgba(255,255,255,0.08);"></div>
+          </div>
+
+          ${renderRow(posGroups.FW, 'Atacantes', '#d85b5b')}
+          ${renderRow(posGroups.MF, 'Meio-campo', '#8b7fd8')}
+          ${renderRow(posGroups.DF, 'Defesa', '#5b9fd8')}
+          ${renderRow(posGroups.GK, 'Goleiro', '#4a9eff')}
+        </div>
+      `;
+    }
+
+    function renderRow(players, label, color) {
+      if (players.length === 0) {
+        return `<div style="display:flex;justify-content:center;margin:var(--space-md) 0;">
+          <div style="border:2px dashed rgba(255,255,255,0.15);border-radius:var(--radius-md);padding:var(--space-sm) var(--space-md);color:rgba(255,255,255,0.3);font-size:12px;">${label}</div>
+        </div>`;
+      }
+      return `<div style="display:flex;justify-content:center;gap:var(--space-md);margin:var(--space-md) 0;flex-wrap:wrap;">
+        ${players.map(p => `
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;" onclick="removePlayer(${p.atleta_id})">
+            <div style="width:44px;height:44px;border-radius:50%;background-color:${color};border:2px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.4);">
+              ${POSICAO_LABEL[p.posicao_id]||'?'}
+            </div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.8);text-align:center;max-width:48px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${p.nome.split(' ').pop()}</div>
+          </div>
+        `).join('')}
+      </div>`;
+    }
+
+    window.removePlayer = function(id) {
+      state.selectedIds.delete(id);
+      updateCounter();
+      renderBoard();
+      renderPlayerList(playerSearch.value);
     };
 
-    const REQUERIMENTOS_FORMACAO = {
-      '4-4-2': { 1: 1, 2: 2, 3: 2, 4: 4, 5: 2 },
-      '4-3-3': { 1: 1, 2: 2, 3: 2, 4: 3, 5: 3 },
-      '3-5-2': { 1: 1, 2: 0, 3: 3, 4: 5, 5: 2 }
-    };
-
-    let jogadoresPorPosicao = {};
-    let formacaoAtual = '4-4-2';
-    let jogadoreSelecionados = {};
-
-    async function inicializarPagina() {
-      const estadoAtual = estado.getEstado();
-
-      if (!estadoAtual.clubeId) {
-        window.location.href = 'index.html';
+    function renderPlayerList(filter = '') {
+      playersList.innerHTML = '';
+      const q = filter.toLowerCase();
+      const filtered = state.allPlayers.filter(p => !filter || p.nome.toLowerCase().includes(q));
+      playersCount.textContent = filtered.length;
+      if (!filtered.length) {
+        playersList.innerHTML = '<div class="state-empty"><div class="state-empty__icon">🔍</div><div class="state-empty__text">Nenhum jogador</div></div>';
         return;
       }
-
-      // Load club name
-      const clubs = await api.getClubs();
-      const club = clubs.find(c => c.id === estadoAtual.clubeId);
-      if (club) {
-        document.getElementById('club-name').textContent = club.nome;
-      }
-
-      // Load players for club
-      const players = await api.getPlayersByClub(estadoAtual.clubeId);
-
-      // Group by position
-      POSICOES[1] = 'GOL';
-      for (const pos of [1, 2, 3, 4, 5]) {
-        jogadoresPorPosicao[pos] = players.filter(p => p.posicao_id === pos);
-      }
-
-      renderJogadores();
-      atualizarValidacao();
-
-      // Add radio listeners
-      document.querySelectorAll('input[name="formacao"]').forEach(radio => {
-        radio.addEventListener('change', (e) => {
-          formacaoAtual = e.target.value;
-          atualizarValidacao();
-        });
+      filtered.forEach(p => {
+        const pos = POSICAO_POS[p.posicao_id]||'MF';
+        const label = POSICAO_LABEL[p.posicao_id]||'MEI';
+        const sel = state.selectedIds.has(p.atleta_id);
+        const club = state.clubs.find(c => c.id === p.clube_id);
+        const item = document.createElement('div');
+        item.className = `player-list-item${sel?' selected':''}`;
+        item.innerHTML = `
+          <div class="player-list-item__pos player-list-item__pos--${pos}">${label}</div>
+          <div class="player-list-item__info">
+            <div class="player-list-item__name">${p.nome}</div>
+            <div class="player-list-item__meta">${club?.abreviacao||'—'}</div>
+          </div>
+          <div class="player-list-item__rating">${(p.media_num||0).toFixed(1)}</div>
+        `;
+        item.addEventListener('click', () => togglePlayer(p));
+        playersList.appendChild(item);
       });
     }
 
-    function renderJogadores() {
-      const container = document.getElementById('players-container');
-      container.innerHTML = '';
-
-      for (const [posId, posNome] of Object.entries(POSICOES)) {
-        const posNum = parseInt(posId);
-        const jogadores = jogadoresPorPosicao[posNum] || [];
-
-        const section = document.createElement('div');
-        section.style.marginBottom = '2rem';
-        section.innerHTML = `<h4>${posNome}</h4>`;
-
-        jogadores.forEach(jogador => {
-          const card = document.createElement('div');
-          card.className = 'player-card card card-interactive';
-          card.id = `player-${jogador.atleta_id}`;
-
-          const checkbox = document.createElement('input');
-          checkbox.type = 'checkbox';
-          checkbox.value = jogador.atleta_id;
-
-          checkbox.addEventListener('change', (e) => {
-            if (e.target.checked) {
-              jogadoreSelecionados[jogador.atleta_id] = jogador;
-            } else {
-              delete jogadoreSelecionados[jogador.atleta_id];
-            }
-
-            if (card.classList.contains('selected')) {
-              card.classList.remove('selected');
-            } else {
-              card.classList.add('selected');
-            }
-
-            atualizarValidacao();
-          });
-
-          card.appendChild(checkbox);
-
-          const info = document.createElement('div');
-          info.className = 'player-card__info';
-          info.innerHTML = `
-            <div style="font-weight: 600; text-primary">${jogador.nome}</div>
-            <div style="font-size: 0.9rem; text-secondary">Média: ${jogador.media_num.toFixed(1)}</div>
-          `;
-
-          card.appendChild(info);
-          section.appendChild(card);
-        });
-
-        container.appendChild(section);
+    function togglePlayer(p) {
+      const id = p.atleta_id;
+      if (state.selectedIds.has(id)) { state.selectedIds.delete(id); }
+      else {
+        if (state.selectedIds.size >= 11) {
+          validationMsg.textContent = 'Máximo 11 jogadores. Remova um clicando nele no campo.';
+          validationMsg.style.display = 'block';
+          setTimeout(() => validationMsg.style.display='none', 3000);
+          return;
+        }
+        state.selectedIds.add(id);
       }
+      updateCounter(); renderBoard(); renderPlayerList(playerSearch.value);
     }
 
-    function atualizarValidacao() {
-      const requerimentos = REQUERIMENTOS_FORMACAO[formacaoAtual];
-      let valido = true;
-      let mensagem = '';
-
-      for (const [posId, quantidade] of Object.entries(requerimentos)) {
-        const posNum = parseInt(posId);
-        const selecionadosNesta = Object.values(jogadoreSelecionados).filter(
-          j => j.posicao_id === posNum
-        ).length;
-
-        if (selecionadosNesta < quantidade) {
-          valido = false;
-          const posNome = POSICOES[posNum];
-          const faltam = quantidade - selecionadosNesta;
-          mensagem += `Faltam ${faltam} ${posNome}. `;
-        }
-      }
-
-      const totalSelecionados = Object.keys(jogadoreSelecionados).length;
-      if (totalSelecionados !== 11) {
-        valido = false;
-        if (!mensagem) {
-          mensagem = `Selecione 11 jogadores (${totalSelecionados} selecionados)`;
-        }
-      }
-
-      document.getElementById('validation-message').textContent = mensagem;
-      document.getElementById('confirm-button').disabled = !valido;
+    function updateCounter() {
+      const n = state.selectedIds.size;
+      lineupCount.textContent = `${n} / 11`;
+      lineupCount.className = n===11 ? 'badge badge-success' : 'badge badge-info';
+      btnConfirm.disabled = n !== 11;
+      btnConfirm.textContent = `Confirmar Escalação (${n}/11)`;
     }
 
-    window.confirmarEscalacao = function() {
-      const escalacao = Object.values(jogadoreSelecionados);
-      estado.setEstado({
-        escalacaoAtual: escalacao,
-        esquemaTatico: formacaoAtual
-      });
+    btnConfirm.addEventListener('click', () => {
+      const escalacao = state.allPlayers.filter(p => state.selectedIds.has(p.atleta_id));
+      estado.setEstado({ escalacaoAtual: escalacao, esquemaTatico: state.formation });
       window.location.href = 'simulacao.html';
-    };
+    });
 
-    inicializarPagina();
+    formationSelect.addEventListener('change', e => {
+      state.formation = e.target.value;
+      formationBadge.textContent = state.formation;
+      renderBoard();
+    });
+
+    playerSearch.addEventListener('input', e => renderPlayerList(e.target.value));
+
+    async function init() {
+      const st = estado.getEstado();
+      document.getElementById('nav-club').textContent = st.nomeClube || '—';
+      state.formation = st.esquemaTatico || '4-3-3';
+      formationSelect.value = state.formation;
+      formationBadge.textContent = state.formation;
+      if (st.escalacaoAtual?.length) st.escalacaoAtual.forEach(p => state.selectedIds.add(p.atleta_id));
+      try {
+        const [players, clubs] = await Promise.all([api.getPlayers(), api.getClubs()]);
+        state.allPlayers = players; state.clubs = clubs;
+        renderBoard(); renderPlayerList(); updateCounter();
+      } catch(err) {
+        console.error(err);
+        playersList.innerHTML = '<div class="state-empty"><div class="state-empty__text">Erro ao carregar jogadores.</div></div>';
+      }
+    }
+    init();
   </script>
 </body>
 </html>

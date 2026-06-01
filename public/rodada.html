@@ -3,183 +3,240 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rodada - Cartola Elifoot</title>
+  <title>Cartola Elifoot — Rodada</title>
   <link rel="stylesheet" href="/css/main.css">
 </head>
-<body>
-  <header>
-    <h1>Rodada Dashboard</h1>
-    <nav class="nav nav-horizontal" style="margin-top: var(--space-sm);">
-      <a href="index.html" class="nav-link">Home</a>
-      <a href="escalacao.html" class="nav-link">Escalação</a>
-      <a href="simulacao.html" class="nav-link">Simulação</a>
-      <a href="resultado.html" class="nav-link">Resultado</a>
-    </nav>
-  </header>
+<body class="page-wrapper">
 
-  <div class="container">
-    <!-- Current Round Info -->
-    <div class="card elevated" style="margin-bottom: var(--space-xl);">
-      <h2 class="text-lg font-bold text-primary">Rodada <span id="rodadaNum">1</span></h2>
-      <div class="grid grid-cols-auto gap-lg" style="margin-top: var(--space-md);">
-        <div class="info-box">
-          <h3 class="info-box__label text-uppercase text-secondary">Próximo Adversário</h3>
-          <p id="proximoAdversario" class="text-lg font-bold text-primary">Carregando...</p>
-          <p id="proximaPosicao" style="font-size: 0.9rem; text-secondary">-</p>
+  <nav class="app-nav">
+    <a href="/" class="app-nav__logo">⚽ Cartola Elifoot</a>
+    <div class="app-nav__links">
+      <a href="/" class="app-nav__link">Dashboard</a>
+      <a href="escalacao.html" class="app-nav__link">Escalação</a>
+    </div>
+    <span class="app-nav__season" id="nav-club">—</span>
+  </nav>
+
+  <div class="page-content">
+    <div class="page-header">
+      <h1>Rodada — Série A 2026</h1>
+      <p>Classificação, histórico e estatísticas da temporada</p>
+    </div>
+
+    <!-- Season Stats -->
+    <div class="page-grid-2" style="margin-bottom:var(--space-lg);">
+      <div class="section-card">
+        <div class="section-card__header">
+          <span class="section-card__title">Minha Temporada</span>
+          <span id="my-club-badge" class="section-card__badge">—</span>
         </div>
-        <div class="info-box">
-          <h3 class="info-box__label text-uppercase text-secondary">Sua Posição</h3>
-          <p id="minhaposicao" class="text-lg font-bold text-primary">-</p>
-          <p id="meuClube" style="font-size: 0.9rem; text-secondary">-</p>
+        <div class="section-card__body">
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-md);text-align:center;">
+            <div>
+              <div style="font-family:var(--font-mono);font-size:var(--stat-size);font-weight:700;color:var(--secondary-accent);" id="stat-v">0</div>
+              <div style="font-size:var(--body-small-size);color:var(--text-secondary);">Vitórias</div>
+            </div>
+            <div>
+              <div style="font-family:var(--font-mono);font-size:var(--stat-size);font-weight:700;color:var(--warning-accent);" id="stat-e">0</div>
+              <div style="font-size:var(--body-small-size);color:var(--text-secondary);">Empates</div>
+            </div>
+            <div>
+              <div style="font-family:var(--font-mono);font-size:var(--stat-size);font-weight:700;color:var(--danger-accent);" id="stat-d">0</div>
+              <div style="font-size:var(--body-small-size);color:var(--text-secondary);">Derrotas</div>
+            </div>
+          </div>
+          <div style="margin-top:var(--space-md);padding-top:var(--space-md);border-top:var(--border-1px);display:flex;justify-content:space-between;">
+            <span style="font-size:var(--body-small-size);color:var(--text-secondary);">Gols Pró: <span id="stat-gp" style="color:var(--text-primary);font-weight:600;">0</span></span>
+            <span style="font-size:var(--body-small-size);color:var(--text-secondary);">Gols Contra: <span id="stat-gc" style="color:var(--text-primary);font-weight:600;">0</span></span>
+            <span style="font-size:var(--body-small-size);color:var(--text-secondary);">Saldo: <span id="stat-sg" style="font-weight:600;">0</span></span>
+          </div>
         </div>
-        <div class="info-box">
-          <button onclick="window.location.href='escalacao.html'" class="btn btn-primary btn-block">
-            Ir para Escalação
-          </button>
+      </div>
+      <div class="section-card">
+        <div class="section-card__header">
+          <span class="section-card__title">Próxima Partida</span>
+        </div>
+        <div class="section-card__body" style="display:flex;align-items:center;justify-content:center;gap:var(--space-xl);padding:var(--space-xl);">
+          <div style="text-align:center;">
+            <div style="font-size:var(--h3-size);font-weight:700;color:var(--text-primary);" id="next-home">—</div>
+            <div style="font-size:var(--body-small-size);color:var(--text-secondary);">CASA</div>
+          </div>
+          <div style="font-family:var(--font-mono);font-size:var(--h2-size);color:var(--text-tertiary);">×</div>
+          <div style="text-align:center;">
+            <div style="font-size:var(--h3-size);font-weight:700;color:var(--text-primary);" id="next-away">—</div>
+            <div style="font-size:var(--body-small-size);color:var(--text-secondary);">VISIT.</div>
+          </div>
+        </div>
+        <div style="padding:0 var(--space-lg) var(--space-lg);text-align:center;">
+          <a href="escalacao.html" class="btn btn-primary">Escalar e Jogar</a>
         </div>
       </div>
     </div>
 
-    <!-- Main Content Grid -->
-    <div class="standings-grid grid grid-cols-2 gap-lg">
-      <!-- Standings -->
-      <div class="standings-container card card-elevated">
-        <div class="flex justify-between align-center" style="margin-bottom: var(--space-md);">
-          <h2 class="text-lg font-bold text-primary" style="margin: 0;">Classificação</h2>
-          <button id="btnRefresh" onclick="atualizarClassificacao()" class="btn btn-secondary btn-sm">
-            ↻ Atualizar
-          </button>
+    <!-- Standings Table -->
+    <div class="section-card" style="margin-bottom:var(--space-lg);">
+      <div class="section-card__header">
+        <span class="section-card__title">Classificação</span>
+        <div class="zone-legend" style="padding:0;">
+          <div class="zone-badge zone-badge--libertadores">Libertadores</div>
+          <div class="zone-badge zone-badge--copa">Sul-Americana</div>
+          <div class="zone-badge zone-badge--rebaixamento">Rebaixamento</div>
         </div>
-        <div id="tabelaContainer" class="table-wrapper">
-          <p class="text-secondary">Carregando classificação...</p>
-        </div>
-        <p id="ultimaAtualizacao" class="text-xs text-tertiary" style="margin-top: var(--space-md);">-</p>
       </div>
-
-      <!-- Stats -->
-      <div class="stats-container card card-elevated">
-        <h2 class="text-lg font-bold text-primary">Estatísticas da Temporada</h2>
-        <div class="stats-summary grid grid-cols-4 gap-md">
-          <div class="stat-box card card-secondary">
-            <div class="stat-box__label text-secondary">Vitórias</div>
-            <div class="stat-box__value text-lg font-bold text-success" id="statVitorias">0</div>
-          </div>
-          <div class="stat-box card card-secondary">
-            <div class="stat-box__label text-secondary">Empates</div>
-            <div class="stat-box__value text-lg font-bold text-info" id="statEmpates">0</div>
-          </div>
-          <div class="stat-box card card-secondary">
-            <div class="stat-box__label text-secondary">Derrotas</div>
-            <div class="stat-box__value text-lg font-bold text-danger" id="statDerrotas">0</div>
-          </div>
-          <div class="stat-box card card-secondary">
-            <div class="stat-box__label text-secondary">Saldo</div>
-            <div class="stat-box__value text-lg font-bold text-primary" id="statSaldo">0</div>
-          </div>
+      <div class="section-card__body section-card__body--no-pad">
+        <div id="standings-loading" class="state-loading" style="padding:var(--space-xl);">
+          <div class="spinner"></div><span>Carregando tabela...</span>
         </div>
+        <div id="standings-container" style="display:none;overflow-x:auto;"></div>
       </div>
     </div>
 
-    <!-- History Timeline -->
-    <div class="historia-container card card-elevated" style="margin-top: var(--space-xl);">
-      <h2 class="text-lg font-bold text-primary">Histórico de Partidas</h2>
-      <div id="historicoContainer">
-        <p class="text-secondary">Nenhuma partida jogada ainda.</p>
+    <!-- Match History -->
+    <div class="page-grid-2">
+      <div class="section-card">
+        <div class="section-card__header">
+          <span class="section-card__title">Últimas Partidas</span>
+        </div>
+        <div class="section-card__body" id="history-container">
+          <div class="state-empty"><div class="state-empty__icon">📋</div><div class="state-empty__text">Nenhuma partida jogada ainda</div></div>
+        </div>
       </div>
-      <div class="flex flex-center" style="margin-top: var(--space-md);">
-        <a href="resultado.html" class="link link-primary">Ver histórico completo →</a>
+      <div class="section-card">
+        <div class="section-card__header">
+          <span class="section-card__title">Ações Rápidas</span>
+        </div>
+        <div class="section-card__body" style="display:flex;flex-direction:column;gap:var(--space-md);">
+          <a href="escalacao.html" class="btn btn-primary btn-block">Escalar Time</a>
+          <a href="simulacao.html" class="btn btn-secondary btn-block">Simular Partida</a>
+          <a href="/" class="btn btn-secondary btn-block">Trocar Clube</a>
+        </div>
       </div>
     </div>
   </div>
 
   <script type="module">
-    import * as standings from './js/standings.js';
-    import * as historico from './js/historico.js';
     import * as estado from './js/estado.js';
 
-    let estadoAtual = null;
+    const ADVERSARIOS = ['Flamengo','Palmeiras','São Paulo','Corinthians','Santos','Botafogo','Vasco','Fluminense','Cruzeiro','Atlético MG','Grêmio','Internacional','Bahia','Fortaleza','Vitória','RB Bragantino','Goiás','Cuiabá','Chapecoense','Juventude'];
 
-    async function inicializar() {
+    function init() {
+      const st = estado.getEstado();
+      document.getElementById('nav-club').textContent = st.nomeClube || '—';
+      document.getElementById('my-club-badge').textContent = st.nomeClube || '—';
+
+      const stats = st.estatisticas || {};
+      document.getElementById('stat-v').textContent = stats.vitorias || 0;
+      document.getElementById('stat-e').textContent = stats.empates || 0;
+      document.getElementById('stat-d').textContent = stats.derrotas || 0;
+      document.getElementById('stat-gp').textContent = stats.gols_pro || 0;
+      document.getElementById('stat-gc').textContent = stats.gols_contra || 0;
+      const sg = (stats.gols_pro||0) - (stats.gols_contra||0);
+      const sgEl = document.getElementById('stat-sg');
+      sgEl.textContent = sg > 0 ? '+'+sg : sg;
+      sgEl.style.color = sg > 0 ? 'var(--secondary-accent)' : sg < 0 ? 'var(--danger-accent)' : 'var(--text-primary)';
+
+      // Next match (random)
+      const next = ADVERSARIOS[Math.floor(Math.random() * ADVERSARIOS.length)];
+      document.getElementById('next-home').textContent = st.nomeClube || 'Seu Time';
+      document.getElementById('next-away').textContent = next;
+
+      // Match history
+      const historico = st.historico || [];
+      const hContainer = document.getElementById('history-container');
+      if (historico.length) {
+        const recent = [...historico].reverse().slice(0,5);
+        hContainer.innerHTML = recent.map(h => {
+          const p = h.placar || {};
+          const diff = (p.casa||0) - (p.visitante||0);
+          const outcomeClass = diff>0?'win':diff<0?'loss':'draw';
+          const outcomeText = diff>0?'V':diff<0?'D':'E';
+          return `
+            <div style="display:flex;align-items:center;gap:var(--space-md);padding:var(--space-sm) 0;border-bottom:var(--border-1px);">
+              <div class="result-outcome result-outcome--${outcomeClass}" style="width:28px;text-align:center;">${outcomeText}</div>
+              <div style="flex:1;font-size:var(--body-regular-size);color:var(--text-primary);">${h.adversario||'Adversário'}</div>
+              <div style="font-family:var(--font-mono);font-weight:700;color:var(--text-highlight);">${p.casa||0} × ${p.visitante||0}</div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Load standings
+      loadStandings(st.clubeId);
+    }
+
+    async function loadStandings(clubeId) {
       try {
-        // Get current state
-        estadoAtual = estado.getEstado();
+        let tabela = [];
+        try {
+          const r = await fetch('/data/tabela-inicial.json');
+          if (r.ok) tabela = await r.json();
+        } catch (e) { /* use empty */ }
 
-        // Update round number
-        document.getElementById('rodadaNum').textContent = estadoAtual.rodadaAtual || 1;
-
-        // Load standings
-        await atualizarClassificacao();
-
-        // Load history
-        const hist = historico.obterHistoricoCompleto();
-        const ultimas5 = historico.obterUltimosResultados(5);
-        if (ultimas5.length > 0) {
-          const container = document.getElementById('historicoContainer');
-          historico.renderTimelineHistorico(container, ultimas5);
+        if (!tabela.length) {
+          tabela = Array.from({length:20},(_,i)=>({
+            posicao:i+1, clube_id:i+1,
+            nome_clube: ['Flamengo','Palmeiras','São Paulo','Corinthians','Santos','Botafogo','Vasco','Fluminense','Cruzeiro','Atlético MG','Grêmio','Internacional','Bahia','Fortaleza','Vitória','RB Bragantino','Goiás','Cuiabá','Chapecoense','Juventude'][i],
+            jogos:15, vitorias:Math.max(0,14-(i*0.7)|0), empates:2,
+            derrotas:Math.min(13,(i*0.7)|0), pontos:Math.max(5,45-(i*3)|0),
+            gols_pro:Math.max(5,40-(i*3)|0), gols_contra:Math.min(40,10+(i*2)|0),
+            saldo:Math.max(-20,30-(i*5)|0),
+          }));
         }
 
-        // Calculate and display season stats
-        const stats = historico.calcularEstatisticasSeason(hist);
-        document.getElementById('statVitorias').textContent = stats.vitorias || 0;
-        document.getElementById('statEmpates').textContent = stats.empates || 0;
-        document.getElementById('statDerrotas').textContent = stats.derrotas || 0;
-        document.getElementById('statSaldo').textContent = stats.saldo || 0;
+        document.getElementById('standings-loading').style.display = 'none';
+        const container = document.getElementById('standings-container');
+        container.style.display = 'block';
 
-        // Load my club info
-        if (estadoAtual.clubeId) {
-          document.getElementById('meuClube').textContent = 'Seu time';
-        }
-
-        // Pick random next opponent from standings
-        atualizarProximoAdversario();
-      } catch (err) {
-        console.error('Erro ao inicializar rodada:', err);
+        const table = document.createElement('table');
+        table.style.cssText = 'width:100%;border-collapse:collapse;font-size:var(--body-small-size);';
+        table.innerHTML = `
+          <thead>
+            <tr style="background-color:var(--dark-bg-tertiary);">
+              <th style="padding:var(--space-sm) var(--space-md);text-align:left;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;width:40px;">Pos</th>
+              <th style="padding:var(--space-sm) var(--space-md);text-align:left;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;">Clube</th>
+              <th style="padding:var(--space-sm) var(--space-md);text-align:center;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;">J</th>
+              <th style="padding:var(--space-sm) var(--space-md);text-align:center;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;">V</th>
+              <th style="padding:var(--space-sm) var(--space-md);text-align:center;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;">E</th>
+              <th style="padding:var(--space-sm) var(--space-md);text-align:center;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;">D</th>
+              <th style="padding:var(--space-sm) var(--space-md);text-align:center;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;">GP</th>
+              <th style="padding:var(--space-sm) var(--space-md);text-align:center;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;">GC</th>
+              <th style="padding:var(--space-sm) var(--space-md);text-align:center;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;">SG</th>
+              <th style="padding:var(--space-sm) var(--space-md);text-align:center;color:var(--primary-accent);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">Pts</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${tabela.map((c,i) => {
+              const pos = i+1;
+              const isHighlight = c.clube_id === clubeId;
+              const zoneColor = pos<=4?'var(--secondary-accent)':pos<=6?'var(--primary-accent)':pos>=18?'var(--danger-accent)':'transparent';
+              const sg = (c.saldo||((c.gols_pro||0)-(c.gols_contra||0)));
+              return `<tr style="border-bottom:var(--border-1px);${isHighlight?'background-color:rgba(74,158,255,0.08);':''}transition:background-color 0.15s;"
+                         onmouseover="this.style.backgroundColor='var(--dark-bg-tertiary)'"
+                         onmouseout="this.style.backgroundColor='${isHighlight?'rgba(74,158,255,0.08)':'transparent'}'">
+                <td style="padding:var(--space-sm) var(--space-md);text-align:left;border-left:3px solid ${zoneColor};">
+                  <span style="font-family:var(--font-mono);font-weight:700;color:var(--text-secondary);">${pos}</span>
+                </td>
+                <td style="padding:var(--space-sm) var(--space-md);font-weight:${isHighlight?'700':'500'};color:${isHighlight?'var(--primary-accent)':'var(--text-primary)'};">${c.nome_clube||'—'}</td>
+                <td style="padding:var(--space-sm) var(--space-md);text-align:center;color:var(--text-secondary);font-family:var(--font-mono);">${c.jogos||0}</td>
+                <td style="padding:var(--space-sm) var(--space-md);text-align:center;color:var(--secondary-accent);font-family:var(--font-mono);font-weight:600;">${c.vitorias||0}</td>
+                <td style="padding:var(--space-sm) var(--space-md);text-align:center;color:var(--warning-accent);font-family:var(--font-mono);">${c.empates||0}</td>
+                <td style="padding:var(--space-sm) var(--space-md);text-align:center;color:var(--danger-accent);font-family:var(--font-mono);">${c.derrotas||0}</td>
+                <td style="padding:var(--space-sm) var(--space-md);text-align:center;color:var(--text-primary);font-family:var(--font-mono);">${c.gols_pro||0}</td>
+                <td style="padding:var(--space-sm) var(--space-md);text-align:center;color:var(--text-secondary);font-family:var(--font-mono);">${c.gols_contra||0}</td>
+                <td style="padding:var(--space-sm) var(--space-md);text-align:center;color:${sg>=0?'var(--secondary-accent)':'var(--danger-accent)'};font-family:var(--font-mono);">${sg>=0?'+'+sg:sg}</td>
+                <td style="padding:var(--space-sm) var(--space-md);text-align:center;font-family:var(--font-mono);font-weight:700;font-size:var(--body-large-size);color:var(--text-highlight);">${c.pontos||0}</td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        `;
+        container.appendChild(table);
+      } catch(err) {
+        document.getElementById('standings-loading').innerHTML = '<div class="state-empty"><div class="state-empty__text">Erro ao carregar tabela.</div></div>';
+        console.error(err);
       }
     }
 
-    function atualizarProximoAdversario() {
-      if (estadoAtual.tabela && estadoAtual.tabela.length > 0) {
-        const clube = estadoAtual.tabela[Math.floor(Math.random() * estadoAtual.tabela.length)];
-        document.getElementById('proximoAdversario').textContent = clube.nome_clube || 'Desconhecido';
-        document.getElementById('proximaPosicao').textContent = `Posição: ${clube.posicao}º (${clube.pontos} pts)`;
-      }
-
-      // Show current position
-      if (estadoAtual.clubeId && estadoAtual.tabela) {
-        const meuClube = estadoAtual.tabela.find(c => c.clube_id === estadoAtual.clubeId);
-        if (meuClube) {
-          document.getElementById('minhaposicao').textContent = `${meuClube.posicao}º`;
-          document.getElementById('meuClube').textContent = meuClube.nome_clube;
-        }
-      }
-    }
-
-    window.atualizarClassificacao = async function () {
-      try {
-        document.getElementById('btnRefresh').disabled = true;
-        const tabela = await standings.obterTabelaClassificacao();
-        estado.atualizarTabela(tabela);
-
-        // Update local state
-        estadoAtual = estado.getEstado();
-
-        const container = document.getElementById('tabelaContainer');
-        standings.renderTabelaClassificacao(tabela, estadoAtual.clubeId, container);
-
-        const agora = new Date().toLocaleString('pt-BR');
-        document.getElementById('ultimaAtualizacao').textContent = `Atualizado em ${agora}`;
-
-        atualizarProximoAdversario();
-      } catch (err) {
-        console.error('Erro ao atualizar classificação:', err);
-        alert('Erro ao atualizar classificação');
-      } finally {
-        document.getElementById('btnRefresh').disabled = false;
-      }
-    };
-
-    // Initialize on load
-    inicializar();
+    init();
   </script>
 </body>
 </html>

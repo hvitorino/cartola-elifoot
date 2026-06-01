@@ -3,156 +3,192 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cartola Elifoot - Resultado</title>
+  <title>Cartola Elifoot — Resultado</title>
   <link rel="stylesheet" href="/css/main.css">
 </head>
-<body>
-  <header>
-    <h1 id="final-score">0 — 0</h1>
-    <p id="match-info">Resultado da Partida</p>
-  </header>
+<body class="page-wrapper">
 
-  <div class="container">
-    <div class="grid grid-cols-2 gap-lg" style="margin: var(--space-xl) 0;">
-      <div id="home-stats" class="card elevated">
-        <h3 id="home-name" class="text-lg font-bold text-primary">Time da Casa</h3>
-        <div class="stat-row">
-          <span class="text-secondary">Jogadores:</span>
-          <span id="home-players" class="text-highlight">-</span>
-        </div>
-        <div class="stat-row">
-          <span class="text-secondary">Posse:</span>
-          <span id="home-possession" class="text-highlight">-</span>%
-        </div>
-        <div class="stat-row">
-          <span class="text-secondary">Artilheiros:</span>
-          <span id="home-scorers" class="text-highlight">-</span>
-        </div>
-      </div>
-
-      <div id="away-stats" class="card elevated">
-        <h3 id="away-name" class="text-lg font-bold text-primary">Visitante</h3>
-        <div class="stat-row">
-          <span class="text-secondary">Jogadores:</span>
-          <span id="away-players" class="text-highlight">-</span>
-        </div>
-        <div class="stat-row">
-          <span class="text-secondary">Posse:</span>
-          <span id="away-possession" class="text-highlight">-</span>%
-        </div>
-        <div class="stat-row">
-          <span class="text-secondary">Artilheiros:</span>
-          <span id="away-scorers" class="text-highlight">-</span>
-        </div>
-      </div>
+  <nav class="app-nav">
+    <a href="/" class="app-nav__logo">⚽ Cartola Elifoot</a>
+    <div class="app-nav__links">
+      <a href="escalacao.html" class="app-nav__link">Escalação</a>
+      <a href="rodada.html" class="app-nav__link">Rodada</a>
     </div>
+    <span class="app-nav__season" id="nav-club">—</span>
+  </nav>
 
-    <div class="card elevated" style="margin: var(--space-xl) 0;">
-      <h3 class="text-lg font-bold text-primary">Destaques</h3>
-      <div id="highlights" class="highlights-list">
-        <p class="text-secondary">Carregando destaques...</p>
-      </div>
+  <!-- Final Score Hero -->
+  <div class="match-score-hero" id="score-hero">
+    <div class="match-score-hero__team">
+      <div class="match-score-hero__team-name" id="home-name">—</div>
+      <div class="match-score-hero__team-abbr">CASA</div>
     </div>
+    <div>
+      <div class="match-score-hero__scores">
+        <div class="match-score-hero__score" id="score-home">—</div>
+        <div class="match-score-hero__sep">×</div>
+        <div class="match-score-hero__score" id="score-away">—</div>
+      </div>
+      <div id="result-outcome-badge" class="match-score-hero__status">Resultado Final</div>
+    </div>
+    <div class="match-score-hero__team">
+      <div class="match-score-hero__team-name" id="away-name">—</div>
+      <div class="match-score-hero__team-abbr">VISIT.</div>
+    </div>
+  </div>
 
-    <div class="flex flex-center" style="margin: var(--space-xl) 0;">
-      <button onclick="proximaRodada()" class="btn btn-primary btn-lg">
-        Próxima Rodada &gt;
-      </button>
+  <div class="page-content">
+    <div class="page-grid-2">
+      <!-- Timeline -->
+      <div class="section-card">
+        <div class="section-card__header">
+          <span class="section-card__title">Lance a Lance</span>
+        </div>
+        <div class="section-card__body section-card__body--no-pad">
+          <div id="timeline" style="max-height:560px;overflow-y:auto;padding:var(--space-md);display:flex;flex-direction:column;gap:var(--space-sm);"></div>
+        </div>
+      </div>
+
+      <!-- Right column -->
+      <div style="display:flex;flex-direction:column;gap:var(--space-lg);">
+        <!-- Stats -->
+        <div class="section-card">
+          <div class="section-card__header">
+            <span class="section-card__title">Estatísticas</span>
+          </div>
+          <div class="section-card__body" id="stats-container"></div>
+        </div>
+
+        <!-- Top Performers -->
+        <div class="section-card">
+          <div class="section-card__header">
+            <span class="section-card__title">Destaques</span>
+          </div>
+          <div class="section-card__body" id="performers-container"></div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="section-card">
+          <div class="section-card__body" style="display:flex;gap:var(--space-md);flex-wrap:wrap;">
+            <a href="rodada.html" class="btn btn-primary" style="flex:1;">Ver Rodada</a>
+            <a href="simulacao.html" class="btn btn-secondary" style="flex:1;">Nova Partida</a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
   <script type="module">
-    import * as api from './js/api.js';
     import * as estado from './js/estado.js';
 
-    async function inicializarPagina() {
-      const estadoAtual = estado.getEstado();
+    const TIPO_ICON  = { gol:'⚽', chute_fora:'↗', chute_defendido:'🧤', escanteio:'🚩', falta:'⚠️', lateral:'➡️' };
+    const TIPO_COLOR = { gol:'var(--secondary-accent)', chute_fora:'var(--text-tertiary)', chute_defendido:'var(--warning-accent)', falta:'var(--danger-accent)' };
 
-      if (!estadoAtual.ultimaPartida) {
-        window.location.href = 'escalacao.html';
+    function statRow(label, v1, v2, color) {
+      const total = (v1+v2)||1;
+      const pct1 = Math.round((v1/total)*100);
+      return `
+        <div style="margin-bottom:var(--space-sm);">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+            <span style="font-family:var(--font-mono);font-weight:700;color:${color};">${v1}</span>
+            <span style="font-size:var(--body-small-size);color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.08em;">${label}</span>
+            <span style="font-family:var(--font-mono);font-weight:700;color:var(--text-secondary);">${v2}</span>
+          </div>
+          <div class="progress"><div class="progress-bar" style="width:${pct1}%;background-color:${color};"></div></div>
+        </div>
+      `;
+    }
+
+    function init() {
+      const st = estado.getEstado();
+      document.getElementById('nav-club').textContent = st.nomeClube || '—';
+
+      const partida = st.ultimaPartida;
+      if (!partida) {
+        document.getElementById('score-hero').innerHTML = '<div style="padding:var(--space-xl);color:var(--text-secondary);text-align:center;">Nenhuma partida encontrada. <a href="escalacao.html">Jogar</a></div>';
         return;
       }
 
-      const ultima = estadoAtual.ultimaPartida;
+      const { lances, placar, adversario, nomeClube } = partida;
+      document.getElementById('home-name').textContent = nomeClube || 'Seu Time';
+      document.getElementById('away-name').textContent = adversario || 'Adversário';
+      document.getElementById('score-home').textContent = placar.casa;
+      document.getElementById('score-away').textContent = placar.visitante;
 
-      // Display final score
-      document.getElementById('final-score').textContent =
-        `${ultima.placar.casa} — ${ultima.placar.visitante}`;
+      const diff = placar.casa - placar.visitante;
+      const outcome = diff > 0 ? { text:'Vitória!', color:'var(--secondary-accent)' } :
+                      diff < 0 ? { text:'Derrota',  color:'var(--danger-accent)' } :
+                                 { text:'Empate',   color:'var(--warning-accent)' };
+      document.getElementById('result-outcome-badge').innerHTML = `<span style="color:${outcome.color};font-size:1.1em;font-weight:700;">${outcome.text}</span>`;
 
-      document.getElementById('match-info').textContent =
-        `${ultima.adversario.nome}`;
-
-      // Get club names
-      const clubs = await api.getClubs();
-      const clubAtual = clubs.find(c => c.id === estadoAtual.clubeId);
-
-      document.getElementById('home-name').textContent = clubAtual?.nome || 'Seu Time';
-      document.getElementById('away-name').textContent = ultima.adversario.nome;
-
-      // Display stats
-      document.getElementById('home-players').textContent = ultima.escalacao.length;
-      document.getElementById('away-players').textContent = ultima.adversario.escalacao.length;
-
-      // Calculate possession (home team 60% by default in simulation)
-      document.getElementById('home-possession').textContent = '60';
-      document.getElementById('away-possession').textContent = '40';
-
-      // Display scorers
-      if (ultima.destaques?.artilheiros?.casa?.length > 0) {
-        const scorers = ultima.destaques.artilheiros.casa
-          .map(s => `${s.nome} (${s.gols})`)
-          .join(', ');
-        document.getElementById('home-scorers').textContent = scorers;
+      // Timeline
+      const timeline = document.getElementById('timeline');
+      if (lances?.length) {
+        [...lances].reverse().forEach(lance => {
+          const color = TIPO_COLOR[lance.tipo] || 'var(--text-tertiary)';
+          const icon  = TIPO_ICON[lance.tipo] || '▶';
+          const el = document.createElement('div');
+          el.style.cssText = 'display:flex;align-items:flex-start;gap:var(--space-sm);';
+          el.innerHTML = `
+            <div style="width:28px;height:28px;border-radius:50%;background-color:${color};opacity:0.85;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;">${icon}</div>
+            <div style="flex:1;">
+              <div style="font-size:var(--body-small-size);color:var(--text-tertiary);font-family:var(--font-mono);">${lance.minuto||0}'</div>
+              <div style="font-size:var(--body-regular-size);color:${lance.tipo==='gol'?'var(--text-highlight)':'var(--text-primary)'};">${lance.narracao||lance.tipo}</div>
+              ${lance.atacante?`<div style="font-size:var(--body-small-size);color:${color};">${lance.atacante}</div>`:''}
+            </div>
+          `;
+          timeline.appendChild(el);
+        });
       } else {
-        document.getElementById('home-scorers').textContent = 'Nenhum gol';
+        timeline.innerHTML = '<div class="state-empty"><div class="state-empty__text">Sem dados da partida.</div></div>';
       }
 
-      if (ultima.destaques?.artilheiros?.visitante?.length > 0) {
-        const scorers = ultima.destaques.artilheiros.visitante
-          .map(s => `${s.nome} (${s.gols})`)
-          .join(', ');
-        document.getElementById('away-scorers').textContent = scorers;
+      // Stats
+      const goals   = lances.filter(l=>l.tipo==='gol').length;
+      const shots   = lances.filter(l=>['gol','chute_fora','chute_defendido'].includes(l.tipo)).length;
+      const fouls   = lances.filter(l=>l.tipo==='falta').length;
+      const corners = lances.filter(l=>l.tipo==='escanteio').length;
+
+      document.getElementById('stats-container').innerHTML = `
+        ${statRow('Gols', placar.casa, placar.visitante, 'var(--secondary-accent)')}
+        ${statRow('Finalizações', Math.round(shots*.65), Math.round(shots*.35), 'var(--primary-accent)')}
+        ${statRow('Posse', 60, 40, 'var(--tertiary-accent)')}
+        ${statRow('Faltas', Math.round(fouls*.45), Math.round(fouls*.55), 'var(--danger-accent)')}
+        ${statRow('Escanteios', corners, Math.round(corners*.6), 'var(--warning-accent)')}
+      `;
+
+      // Top performers
+      const escalacao = st.escalacaoAtual || [];
+      const performers = escalacao
+        .map(p => ({ ...p, rating: Math.round(((p.media_num||5) * (0.9 + Math.random()*0.2)) * 10)/10 }))
+        .sort((a,b) => b.rating - a.rating)
+        .slice(0,5);
+
+      const pContainer = document.getElementById('performers-container');
+      if (performers.length) {
+        pContainer.innerHTML = performers.map((p,i) => {
+          const POSICAO_LABEL = {1:'GOL',2:'LAT',3:'ZAG',4:'MEI',5:'ATA'};
+          const POSICAO_POS   = {1:'GK', 2:'DF', 3:'DF', 4:'MF', 5:'FW'};
+          const pos = POSICAO_POS[p.posicao_id]||'MF';
+          const label = POSICAO_LABEL[p.posicao_id]||'MEI';
+          const color = i===0?'var(--warning-accent)':'var(--text-secondary)';
+          return `
+            <div style="display:flex;align-items:center;gap:var(--space-sm);padding:var(--space-sm) 0;${i<performers.length-1?'border-bottom:var(--border-1px);':''}">
+              <div style="width:28px;text-align:center;font-family:var(--font-mono);font-size:var(--body-small-size);color:${color};font-weight:700;">${i===0?'★':i+1}</div>
+              <div class="player-list-item__pos player-list-item__pos--${pos}" style="width:32px;height:32px;">${label}</div>
+              <div style="flex:1;">
+                <div style="font-size:var(--body-regular-size);font-weight:600;color:var(--text-primary);">${p.nome}</div>
+              </div>
+              <div style="font-family:var(--font-mono);font-weight:700;color:${p.rating>=7?'var(--secondary-accent)':p.rating>=5?'var(--text-primary)':'var(--danger-accent)'};">${p.rating}</div>
+            </div>
+          `;
+        }).join('');
       } else {
-        document.getElementById('away-scorers').textContent = 'Nenhum gol';
+        pContainer.innerHTML = '<div class="state-empty"><div class="state-empty__text">Sem jogadores escalados.</div></div>';
       }
-
-      // Display highlights
-      const highlightsDiv = document.getElementById('highlights');
-      highlightsDiv.innerHTML = '';
-
-      const melhorJogadorCasa = ultima.destaques?.melhor_jogador?.casa;
-      const melhorJogadorVisitante = ultima.destaques?.melhor_jogador?.visitante;
-
-      if (melhorJogadorCasa?.nome) {
-        const p = document.createElement('p');
-        p.className = 'highlight-item text-sm text-primary';
-        p.textContent = `MVP (Casa): ${melhorJogadorCasa.nome} (Média: ${melhorJogadorCasa.media_num.toFixed(1)})`;
-        highlightsDiv.appendChild(p);
-      }
-
-      if (melhorJogadorVisitante?.nome) {
-        const p = document.createElement('p');
-        p.className = 'highlight-item text-sm text-primary';
-        p.textContent = `MVP (Visitante): ${melhorJogadorVisitante.nome} (Média: ${melhorJogadorVisitante.media_num.toFixed(1)})`;
-        highlightsDiv.appendChild(p);
-      }
-
-      // Save result to history
-      estado.salvarResultado(ultima);
     }
 
-    window.proximaRodada = function() {
-      const estadoAtual = estado.getEstado();
-      const novaRodada = (estadoAtual.rodadaAtual || 1) + 1;
-      estado.setEstado({
-        rodadaAtual: novaRodada,
-        escalacaoAtual: [],
-        esquemaTatico: '4-4-2'
-      });
-      window.location.href = 'escalacao.html';
-    };
-
-    inicializarPagina();
+    init();
   </script>
 </body>
 </html>
