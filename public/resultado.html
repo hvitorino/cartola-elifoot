@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cartola Elifoot - Resultado</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <script src="/components/index.js"></script>
 </head>
 <body>
   <header>
@@ -13,31 +14,51 @@
   </header>
 
   <div class="container">
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0;">
-      <div id="home-stats">
-        <h3 id="home-name">Time da Casa</h3>
-        <div>Jogadores: <span id="home-players">-</span></div>
-        <div>Posse: <span id="home-possession">-</span>%</div>
-        <div>Artilheiros: <span id="home-scorers">-</span></div>
+    <div class="grid grid-cols-2 gap-lg" style="margin: var(--space-xl) 0;">
+      <div id="home-stats" class="card card-elevated">
+        <h3 id="home-name" class="text-lg font-bold text-primary">Time da Casa</h3>
+        <div class="stat-row">
+          <span class="text-secondary">Jogadores:</span>
+          <span id="home-players" class="text-highlight">-</span>
+        </div>
+        <div class="stat-row">
+          <span class="text-secondary">Posse:</span>
+          <span id="home-possession" class="text-highlight">-</span>%
+        </div>
+        <div class="stat-row">
+          <span class="text-secondary">Artilheiros:</span>
+          <span id="home-scorers" class="text-highlight">-</span>
+        </div>
       </div>
 
-      <div id="away-stats">
-        <h3 id="away-name">Visitante</h3>
-        <div>Jogadores: <span id="away-players">-</span></div>
-        <div>Posse: <span id="away-possession">-</span>%</div>
-        <div>Artilheiros: <span id="away-scorers">-</span></div>
+      <div id="away-stats" class="card card-elevated">
+        <h3 id="away-name" class="text-lg font-bold text-primary">Visitante</h3>
+        <div class="stat-row">
+          <span class="text-secondary">Jogadores:</span>
+          <span id="away-players" class="text-highlight">-</span>
+        </div>
+        <div class="stat-row">
+          <span class="text-secondary">Posse:</span>
+          <span id="away-possession" class="text-highlight">-</span>%
+        </div>
+        <div class="stat-row">
+          <span class="text-secondary">Artilheiros:</span>
+          <span id="away-scorers" class="text-highlight">-</span>
+        </div>
       </div>
     </div>
 
-    <div style="background: white; padding: 1.5rem; border-radius: 6px; margin: 2rem 0;">
-      <h3>Destaques</h3>
-      <div id="highlights">
-        <p>Carregando destaques...</p>
+    <div class="card card-elevated" style="margin: var(--space-xl) 0;">
+      <h3 class="text-lg font-bold text-primary">Destaques</h3>
+      <div id="highlights" class="highlights-list">
+        <p class="text-secondary">Carregando destaques...</p>
       </div>
     </div>
 
-    <div style="text-align: center; margin: 2rem 0;">
-      <button onclick="proximaRodada()">Próxima Rodada ></button>
+    <div class="flex flex-center" style="margin: var(--space-xl) 0;">
+      <button onclick="proximaRodada()" class="btn btn-primary btn-lg">
+        Próxima Rodada &gt;
+      </button>
     </div>
   </div>
 
@@ -105,12 +126,14 @@
 
       if (melhorJogadorCasa?.nome) {
         const p = document.createElement('p');
+        p.className = 'highlight-item text-sm text-primary';
         p.textContent = `MVP (Casa): ${melhorJogadorCasa.nome} (Média: ${melhorJogadorCasa.media_num.toFixed(1)})`;
         highlightsDiv.appendChild(p);
       }
 
       if (melhorJogadorVisitante?.nome) {
         const p = document.createElement('p');
+        p.className = 'highlight-item text-sm text-primary';
         p.textContent = `MVP (Visitante): ${melhorJogadorVisitante.nome} (Média: ${melhorJogadorVisitante.media_num.toFixed(1)})`;
         highlightsDiv.appendChild(p);
       }

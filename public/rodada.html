@@ -4,86 +4,91 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rodada - Cartola Elifoot</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <script src="/components/index.js"></script>
 </head>
 <body>
   <header>
     <h1>Rodada Dashboard</h1>
-    <nav style="margin-top: 0.5rem;">
-      <a href="index.html" style="color: white; margin: 0 1rem; text-decoration: none;">Home</a>
-      <a href="escalacao.html" style="color: white; margin: 0 1rem; text-decoration: none;">Escalação</a>
-      <a href="simulacao.html" style="color: white; margin: 0 1rem; text-decoration: none;">Simulação</a>
-      <a href="resultado.html" style="color: white; margin: 0 1rem; text-decoration: none;">Resultado</a>
+    <nav class="nav nav-horizontal" style="margin-top: var(--space-sm);">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="escalacao.html" class="nav-link">Escalação</a>
+      <a href="simulacao.html" class="nav-link">Simulação</a>
+      <a href="resultado.html" class="nav-link">Resultado</a>
     </nav>
   </header>
 
   <div class="container">
     <!-- Current Round Info -->
-    <div style="background: white; border-radius: 6px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-      <h2>Rodada <span id="rodadaNum">1</span></h2>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
-        <div>
-          <h3 style="margin-top: 0; color: #495057; font-size: 0.85rem; text-transform: uppercase;">Próximo Adversário</h3>
-          <p id="proximoAdversario" style="font-size: 1.2rem; font-weight: bold; margin: 0.5rem 0; color: #1a1a2e;">Carregando...</p>
-          <p id="proximaPosicao" style="font-size: 0.9rem; color: #495057; margin: 0;">-</p>
+    <div class="card card-elevated" style="margin-bottom: var(--space-xl);">
+      <h2 class="text-lg font-bold text-primary">Rodada <span id="rodadaNum">1</span></h2>
+      <div class="grid grid-cols-auto gap-lg" style="margin-top: var(--space-md);">
+        <div class="info-box">
+          <h3 class="info-box__label text-uppercase text-secondary">Próximo Adversário</h3>
+          <p id="proximoAdversario" class="text-lg font-bold text-primary">Carregando...</p>
+          <p id="proximaPosicao" class="text-sm text-secondary">-</p>
         </div>
-        <div>
-          <h3 style="margin-top: 0; color: #495057; font-size: 0.85rem; text-transform: uppercase;">Sua Posição</h3>
-          <p id="minhaposicao" style="font-size: 1.2rem; font-weight: bold; margin: 0.5rem 0; color: #1a1a2e;">-</p>
-          <p id="meuClube" style="font-size: 0.9rem; color: #495057; margin: 0;">-</p>
+        <div class="info-box">
+          <h3 class="info-box__label text-uppercase text-secondary">Sua Posição</h3>
+          <p id="minhaposicao" class="text-lg font-bold text-primary">-</p>
+          <p id="meuClube" class="text-sm text-secondary">-</p>
         </div>
-        <div>
-          <button onclick="window.location.href='escalacao.html'" style="width: 100%; margin-top: 2rem;">Ir para Escalação</button>
+        <div class="info-box">
+          <button onclick="window.location.href='escalacao.html'" class="btn btn-primary btn-block">
+            Ir para Escalação
+          </button>
         </div>
       </div>
     </div>
 
     <!-- Main Content Grid -->
-    <div class="standings-grid">
+    <div class="standings-grid grid grid-cols-2 gap-lg">
       <!-- Standings -->
-      <div class="standings-container">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-          <h2 style="margin: 0;">Classificação</h2>
-          <button id="btnRefresh" onclick="atualizarClassificacao()" style="padding: 0.5rem 1rem; font-size: 0.9rem;">↻ Atualizar</button>
+      <div class="standings-container card card-elevated">
+        <div class="flex justify-between align-center" style="margin-bottom: var(--space-md);">
+          <h2 class="text-lg font-bold text-primary" style="margin: 0;">Classificação</h2>
+          <button id="btnRefresh" onclick="atualizarClassificacao()" class="btn btn-secondary btn-sm">
+            ↻ Atualizar
+          </button>
         </div>
-        <div id="tabelaContainer" style="overflow-x: auto;">
-          <p>Carregando classificação...</p>
+        <div id="tabelaContainer" class="table-wrapper">
+          <p class="text-secondary">Carregando classificação...</p>
         </div>
-        <p id="ultimaAtualizacao" style="font-size: 0.8rem; color: #495057; margin-top: 1rem;">-</p>
+        <p id="ultimaAtualizacao" class="text-xs text-tertiary" style="margin-top: var(--space-md);">-</p>
       </div>
 
       <!-- Stats -->
-      <div class="stats-container">
-        <h2 style="margin-top: 0;">Estatísticas da Temporada</h2>
-        <div class="stats-summary">
-          <div class="stat-box">
-            <div class="label">Vitórias</div>
-            <div class="value" id="statVitorias">0</div>
+      <div class="stats-container card card-elevated">
+        <h2 class="text-lg font-bold text-primary">Estatísticas da Temporada</h2>
+        <div class="stats-summary grid grid-cols-4 gap-md">
+          <div class="stat-box card card-secondary">
+            <div class="stat-box__label text-secondary">Vitórias</div>
+            <div class="stat-box__value text-lg font-bold text-success" id="statVitorias">0</div>
           </div>
-          <div class="stat-box">
-            <div class="label">Empates</div>
-            <div class="value" id="statEmpates">0</div>
+          <div class="stat-box card card-secondary">
+            <div class="stat-box__label text-secondary">Empates</div>
+            <div class="stat-box__value text-lg font-bold text-info" id="statEmpates">0</div>
           </div>
-          <div class="stat-box">
-            <div class="label">Derrotas</div>
-            <div class="value" id="statDerrotas">0</div>
+          <div class="stat-box card card-secondary">
+            <div class="stat-box__label text-secondary">Derrotas</div>
+            <div class="stat-box__value text-lg font-bold text-danger" id="statDerrotas">0</div>
           </div>
-          <div class="stat-box">
-            <div class="label">Saldo</div>
-            <div class="value" id="statSaldo">0</div>
+          <div class="stat-box card card-secondary">
+            <div class="stat-box__label text-secondary">Saldo</div>
+            <div class="stat-box__value text-lg font-bold text-primary" id="statSaldo">0</div>
           </div>
         </div>
       </div>
     </div>
 
     <!-- History Timeline -->
-    <div class="historia-container" style="margin-top: 2rem;">
-      <h2>Histórico de Partidas</h2>
+    <div class="historia-container card card-elevated" style="margin-top: var(--space-xl);">
+      <h2 class="text-lg font-bold text-primary">Histórico de Partidas</h2>
       <div id="historicoContainer">
-        <p>Nenhuma partida jogada ainda.</p>
+        <p class="text-secondary">Nenhuma partida jogada ainda.</p>
       </div>
-      <div style="margin-top: 1rem; text-align: center;">
-        <a href="resultado.html" style="color: #667eea; text-decoration: none; font-weight: bold;">Ver histórico completo →</a>
+      <div class="flex flex-center" style="margin-top: var(--space-md);">
+        <a href="resultado.html" class="link link-primary">Ver histórico completo →</a>
       </div>
     </div>
   </div>

@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cartola Elifoot - Selecione um Clube</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <script src="/components/index.js"></script>
 </head>
 <body>
   <header>
@@ -17,11 +18,11 @@
 
     <div id="loading" class="spinner" style="display: none;"></div>
 
-    <div id="error" class="error"></div>
+    <div id="error" class="error error-alert"></div>
 
-    <div id="clubs-container" class="clubs-grid"></div>
+    <div id="clubs-container" class="clubs-grid grid grid-cols-auto gap-lg"></div>
 
-    <p id="fallback-text" style="display: none;">Escolha um clube da lista</p>
+    <p id="fallback-text" class="text-secondary" style="display: none;">Escolha um clube da lista</p>
   </div>
 
   <script type="module">
@@ -47,11 +48,11 @@
 
         clubs.forEach(club => {
           const card = document.createElement('div');
-          card.className = 'club-card';
+          card.className = 'card card-elevated player-card hover:shadow-md transition-shadow';
           card.innerHTML = `
-            <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚽</div>
-            <div style="font-weight: bold;">${club.nome}</div>
-            <div style="font-size: 0.9rem; color: #666;">${club.abreviacao}</div>
+            <div class="card__icon" style="font-size: 2rem; margin-bottom: var(--space-md);">⚽</div>
+            <div class="text-bold text-primary">${club.nome}</div>
+            <div class="text-sm text-secondary">${club.abreviacao}</div>
           `;
 
           card.addEventListener('click', () => {

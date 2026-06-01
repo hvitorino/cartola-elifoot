@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cartola Elifoot - Escalação</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <script src="/components/index.js"></script>
 </head>
 <body>
   <header>
@@ -13,41 +14,41 @@
   </header>
 
   <div class="container">
-    <div>
-      <h3>Esquema Tático</h3>
-      <div style="margin: 1rem 0;">
-        <label>
-          <input type="radio" name="formacao" value="4-4-2" checked>
-          4-4-2 (1 GK, 2 LAT, 2 ZAG, 4 MEI, 2 ATA)
+    <div class="form-section">
+      <h3 class="form-section__title">Esquema Tático</h3>
+      <div class="form-group">
+        <label class="radio-label">
+          <input type="radio" name="formacao" value="4-4-2" checked class="radio-input">
+          <span class="radio-text">4-4-2 (1 GK, 2 LAT, 2 ZAG, 4 MEI, 2 ATA)</span>
         </label>
       </div>
-      <div style="margin: 1rem 0;">
-        <label>
-          <input type="radio" name="formacao" value="4-3-3">
-          4-3-3 (1 GK, 2 LAT, 2 ZAG, 3 MEI, 3 ATA)
+      <div class="form-group">
+        <label class="radio-label">
+          <input type="radio" name="formacao" value="4-3-3" class="radio-input">
+          <span class="radio-text">4-3-3 (1 GK, 2 LAT, 2 ZAG, 3 MEI, 3 ATA)</span>
         </label>
       </div>
-      <div style="margin: 1rem 0;">
-        <label>
-          <input type="radio" name="formacao" value="3-5-2">
-          3-5-2 (1 GK, 3 ZAG, 5 MEI, 2 ATA)
+      <div class="form-group">
+        <label class="radio-label">
+          <input type="radio" name="formacao" value="3-5-2" class="radio-input">
+          <span class="radio-text">3-5-2 (1 GK, 3 ZAG, 5 MEI, 2 ATA)</span>
         </label>
       </div>
     </div>
 
-    <div>
-      <h3>Selecione 11 Jogadores</h3>
-      <div id="validation-message" style="color: #b91c1c; margin: 1rem 0;"></div>
-      <div id="players-container" class="player-list"></div>
+    <div class="form-section">
+      <h3 class="form-section__title">Selecione 11 Jogadores</h3>
+      <div id="validation-message" class="validation-message validation-message--error"></div>
+      <div id="players-container" class="players-grid grid grid-cols-2 gap-md"></div>
     </div>
 
-    <div style="text-align: center; margin: 2rem 0;">
-      <button id="confirm-button" disabled onclick="confirmarEscalacao()">
+    <div class="flex flex-center" style="margin: var(--space-xl) 0;">
+      <button id="confirm-button" class="btn btn-primary btn-lg" disabled onclick="confirmarEscalacao()">
         Confirmar & Simular
       </button>
     </div>
 
-    <div id="error" class="error"></div>
+    <div id="error" class="error error-alert"></div>
   </div>
 
   <script type="module">
@@ -122,7 +123,7 @@
 
         jogadores.forEach(jogador => {
           const card = document.createElement('div');
-          card.className = 'player-card';
+          card.className = 'player-card card card-interactive';
           card.id = `player-${jogador.atleta_id}`;
 
           const checkbox = document.createElement('input');
@@ -148,9 +149,10 @@
           card.appendChild(checkbox);
 
           const info = document.createElement('div');
+          info.className = 'player-card__info';
           info.innerHTML = `
-            <div style="font-weight: bold; color: #1a1a2e;">${jogador.nome}</div>
-            <div style="font-size: 0.9rem; color: #495057;">Média: ${jogador.media_num.toFixed(1)}</div>
+            <div class="text-bold text-primary">${jogador.nome}</div>
+            <div class="text-sm text-secondary">Média: ${jogador.media_num.toFixed(1)}</div>
           `;
 
           card.appendChild(info);
