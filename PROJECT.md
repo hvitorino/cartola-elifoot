@@ -57,7 +57,7 @@ elifoot-cartola/
 [Escalação]
   → Listar jogadores disponíveis do elenco
   → Selecionar 11 titulares por posição
-  → Escolher esquema tático (4-4-2, 4-3-3)
+  → Escolher esquema tático (4-4-2, 4-3-3, 3-5-2)
   → Confirmar e simular
 
 [Simulação]
