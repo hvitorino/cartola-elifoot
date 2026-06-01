@@ -37,7 +37,7 @@
 
     <div>
       <h3>Selecione 11 Jogadores</h3>
-      <div id="validation-message" style="color: #c00; margin: 1rem 0;"></div>
+      <div id="validation-message" style="color: #b91c1c; margin: 1rem 0;"></div>
       <div id="players-container" class="player-list"></div>
     </div>
 
@@ -149,8 +149,8 @@
 
           const info = document.createElement('div');
           info.innerHTML = `
-            <div style="font-weight: bold;">${jogador.nome}</div>
-            <div style="font-size: 0.9rem; color: #666;">Média: ${jogador.media_num.toFixed(1)}</div>
+            <div style="font-weight: bold; color: #1a1a2e;">${jogador.nome}</div>
+            <div style="font-size: 0.9rem; color: #495057;">Média: ${jogador.media_num.toFixed(1)}</div>
           `;
 
           card.appendChild(info);

@@ -51,7 +51,7 @@
 /* Historia cards - mobile stack */
 .historia-card {
   background: white;
-  border: 1px solid #ddd;
+  border: 1px solid #dee2e6;
   border-radius: 6px;
   padding: 1rem;
   margin-bottom: 1rem;
@@ -110,7 +110,7 @@
 .historia-card-score .team-name {
   display: block;
   font-size: 0.9rem;
-  color: #666;
+  color: #495057;
   margin-bottom: 0.25rem;
 }
 
@@ -134,7 +134,7 @@
 }
 
 .historia-card-stats .label {
-  color: #999;
+  color: #495057;
   font-size: 0.75rem;
   text-transform: uppercase;
   margin-bottom: 0.25rem;
@@ -155,6 +155,7 @@
 .stats-container,
 .historia-container {
   background: white;
+  border: 1px solid #dee2e6;
   border-radius: 6px;
   padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
@@ -175,7 +176,7 @@
 
 .stat-box .label {
   font-size: 0.75rem;
-  color: #999;
+  color: #495057;
   text-transform: uppercase;
   margin-bottom: 0.5rem;
 }
@@ -312,8 +313,8 @@
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
   body {
-    background: #1a1a1a;
-    color: #fff;
+    background: #1a1a2e;
+    color: #e9ecef;
   }
 
   .card,
@@ -322,8 +323,8 @@
   .historia-container,
   .historia-card,
   .standings-table {
-    background: #2a2a2a;
-    border-color: #444;
+    background: #16213e;
+    border-color: #495057;
   }
 
   .standings-table thead {
@@ -339,23 +340,40 @@
   }
 
   .stat-box {
-    background: #333;
+    background: #16213e;
+    border-color: #495057;
   }
 
   .historia-card-header {
-    border-bottom-color: #444;
+    border-bottom-color: #495057;
   }
 
   .historia-card-stats .label {
-    color: #aaa;
+    color: #adb5bd;
   }
 
   .historia-card .team-name {
-    color: #bbb;
+    color: #dee2e6;
   }
 
   .historia-card-score .score {
     color: #9ca3ff;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: #ffffff;
+  }
+
+  input:focus-visible,
+  button:focus-visible,
+  a:focus-visible {
+    outline: 2px solid #818cf8;
+    outline-offset: 2px;
+  }
+
+  button:disabled {
+    background: #495057;
+    color: #9ca3af;
   }
 }
 

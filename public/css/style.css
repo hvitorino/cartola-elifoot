@@ -8,7 +8,8 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   margin: 0;
   padding: 0;
-  background: #f5f5f5;
+  background: #f8f9fa;
+  color: #1a1a2e;
 }
 
 header {
@@ -16,6 +17,23 @@ header {
   color: white;
   padding: 1rem;
   text-align: center;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f1a3a;
+  font-weight: 600;
+}
+
+h3 {
+  font-size: 1.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .container {
@@ -34,7 +52,7 @@ header {
 
 .club-card {
   background: white;
-  border: 2px solid #ddd;
+  border: 2px solid #dee2e6;
   border-radius: 8px;
   padding: 1rem;
   text-align: center;
@@ -62,7 +80,7 @@ header {
 
 .player-card {
   background: white;
-  border: 1px solid #ddd;
+  border: 1px solid #dee2e6;
   border-radius: 6px;
   padding: 0.75rem;
   display: flex;
@@ -82,7 +100,7 @@ header {
 /* Narrative */
 #naracao {
   background: white;
-  border: 1px solid #ddd;
+  border: 1px solid #dee2e6;
   border-radius: 6px;
   padding: 1rem;
   min-height: 300px;
@@ -124,7 +142,7 @@ header {
   font-weight: bold;
   text-align: center;
   margin: 1rem 0;
-  color: #333;
+  color: #1a1a2e;
 }
 
 /* Buttons */
@@ -144,8 +162,21 @@ button:hover:not(:disabled) {
 }
 
 button:disabled {
-  background: #ccc;
+  background: #d0d0d0;
+  color: #6c757d;
   cursor: not-allowed;
+}
+
+/* Focus states for accessibility */
+input:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
+}
+
+button:focus-visible {
+  outline-offset: 4px;
 }
 
 /* Loading */
@@ -166,12 +197,13 @@ button:disabled {
 
 /* Error message */
 .error {
-  background: #fee;
-  color: #c00;
+  background: #fee2e2;
+  color: #b91c1c;
   padding: 1rem;
   border-radius: 6px;
   margin: 1rem 0;
   display: none;
+  border: 1px solid #fca5a5;
 }
 
 .error.show {
