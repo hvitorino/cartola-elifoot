@@ -1,0 +1,292 @@
+/* PlayerCard Component Styles */
+
+/* Compact variant */
+.player-card-compact {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  border: 2px solid transparent;
+  transition: all var(--transition-fast);
+}
+
+.player-card-compact:hover {
+  opacity: 100%;
+  border-color: #4a9eff;
+}
+
+.player-card-compact.selected {
+  border: 3px solid #4a9eff;
+  box-shadow: 0 0 24px rgba(74, 158, 255, 0.4);
+}
+
+.player-card-compact__jersey {
+  font-size: 28px;
+  font-weight: bold;
+  color: white;
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+/* Standard variant */
+.player-card-standard {
+  width: 280px;
+  min-height: 320px;
+  background: var(--dark-bg-primary);
+  border: 1px #252d3d solid;
+  border-radius: var(--radius-md);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.player-card-standard:hover {
+  background-color: var(--dark-bg-secondary);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.player-card-standard.selected {
+  border-left: 3px solid #4a9eff;
+  box-shadow: 0 0 16px rgba(74, 158, 255, 0.3);
+}
+
+.player-card-standard__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.player-card-standard__jersey-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.player-card-standard__jersey {
+  font-weight: bold;
+  color: #4a9eff;
+}
+
+.player-card-standard__name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.player-card-standard__subheader {
+  font-size: 13px;
+  color: #a8adb8;
+}
+
+.player-card-standard__rating-section {
+  display: flex;
+  justify-content: center;
+}
+
+.player-card-standard__rating {
+  font-size: 24px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: bold;
+  color: #4a9eff;
+}
+
+.player-card-standard__fitness-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.player-card-standard__fitness-bar {
+  height: 4px;
+  background-color: #252d3d;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.player-card-standard__fitness-fill {
+  height: 100%;
+  background-color: #6bbf59;
+  transition: width var(--transition-fast);
+}
+
+.player-card-standard__fitness-text {
+  font-size: 12px;
+  color: #a8adb8;
+  text-align: right;
+}
+
+.player-card-standard__form-section {
+  display: flex;
+  justify-content: center;
+}
+
+.player-card-standard__price-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.player-card-standard__price {
+  font-size: 14px;
+  font-weight: 600;
+  color: #4a9eff;
+}
+
+.player-card-standard__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* Detailed variant */
+.player-card-detailed {
+  background: var(--dark-bg-elevated);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  max-width: 600px;
+  width: 100%;
+}
+
+.player-card-detailed__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.player-card-detailed__header h2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.player-card-detailed__subheader {
+  font-size: 14px;
+  color: #a8adb8;
+  margin-bottom: 12px;
+}
+
+.player-card-detailed__rating {
+  font-size: 16px;
+  font-weight: 600;
+  color: #4a9eff;
+  margin-bottom: 16px;
+}
+
+.player-card-detailed__section-title {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #a8adb8;
+  margin-top: 24px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #252d3d;
+  padding-bottom: 8px;
+}
+
+.player-card-detailed__statistics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.player-card-detailed__stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.player-card-detailed__stat-label {
+  font-size: 12px;
+  color: #a8adb8;
+}
+
+.player-card-detailed__stat-value {
+  font-size: 18px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.player-card-detailed__form-history {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.player-card-detailed__form-box {
+  width: 48px;
+  height: 48px;
+  background: var(--dark-bg-primary);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  font-family: 'IBM Plex Mono', monospace;
+  cursor: pointer;
+}
+
+.player-card-detailed__fitness-large {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.player-card-detailed__fitness-bar-large {
+  height: 6px;
+  background-color: #252d3d;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.player-card-detailed__fitness-fill {
+  height: 100%;
+  background-color: #6bbf59;
+  transition: width var(--transition-fast);
+}
+
+.player-card-detailed__status-large {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  font-size: 14px;
+  color: #a8adb8;
+}
+
+.player-card-detailed__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .player-card-standard {
+    width: 100%;
+  }
+
+  .player-card-detailed {
+    max-width: 100%;
+  }
+
+  .player-card-standard__actions {
+    grid-template-columns: 1fr;
+  }
+
+  .player-card-detailed__statistics-grid {
+    grid-template-columns: 1fr;
+  }
+}

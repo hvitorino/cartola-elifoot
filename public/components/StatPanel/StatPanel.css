@@ -1,0 +1,137 @@
+/* StatPanel Component Styles */
+
+.stat-panel {
+  width: 100%;
+  background: var(--dark-bg-primary);
+  border: 1px solid #252d3d;
+  border-radius: var(--radius-md);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.stat-panel__title {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #a8adb8;
+  margin: 0 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #252d3d;
+}
+
+.stat-panel__grid {
+  display: grid;
+  gap: 0;
+}
+
+.stat-panel__grid--1 {
+  grid-template-columns: 1fr;
+}
+
+.stat-panel__grid--2 {
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.stat-panel__row {
+  display: grid;
+  grid-template-columns: 1fr 80px;
+  gap: 16px;
+  padding: 16px 0;
+  align-items: center;
+  border-bottom: 1px solid #252d3d;
+}
+
+.stat-panel__row:last-child {
+  border-bottom: none;
+}
+
+.stat-panel__label {
+  font-size: 14px;
+  color: #a8adb8;
+  text-align: left;
+}
+
+.stat-panel__value-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+}
+
+.stat-panel__value {
+  font-size: 18px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 700;
+  color: #ffffff;
+  text-align: right;
+}
+
+.stat-panel__progress-bar {
+  width: 100%;
+  background-color: #252d3d;
+  border-radius: 2px;
+  height: 4px;
+  overflow: hidden;
+}
+
+.stat-panel__progress-fill {
+  height: 100%;
+  transition: width var(--transition-fast);
+}
+
+.stat-panel__comparison-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stat-panel__comparison-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #252d3d;
+}
+
+.stat-panel__comparison-row:last-child {
+  border-bottom: none;
+}
+
+.stat-panel__comparison-values {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  font-weight: 600;
+  color: #f0f2f5;
+}
+
+.stat-panel__vs {
+  font-size: 12px;
+  color: #8b95a5;
+}
+
+@media (max-width: 768px) {
+  .stat-panel {
+    padding: 16px;
+  }
+
+  .stat-panel__grid--2 {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .stat-panel__row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 12px 0;
+  }
+
+  .stat-panel__label {
+    font-size: 12px;
+  }
+
+  .stat-panel__value {
+    font-size: 16px;
+  }
+}

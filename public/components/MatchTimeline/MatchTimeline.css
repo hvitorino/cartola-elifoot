@@ -1,0 +1,202 @@
+/* MatchTimeline Component Styles */
+
+.match-timeline {
+  width: 100%;
+  max-height: 500px;
+  overflow-y: auto;
+  background: var(--dark-bg-primary);
+  border: 1px solid #252d3d;
+  border-radius: var(--radius-md);
+  padding: 12px 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.match-timeline__event {
+  display: grid;
+  grid-template-columns: 60px auto 1fr;
+  gap: 12px;
+  padding: 12px 12px;
+  border-left: 4px solid var(--event-color);
+  background-color: rgba(var(--event-color-rgb), 0.03);
+  border-bottom: 1px solid #252d3d;
+  transition: all var(--transition-fast);
+  animation: slideInFromBottom 0.3s ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.match-timeline__event:hover {
+  background-color: rgba(var(--event-color-rgb), 0.08);
+}
+
+.match-timeline__event:last-child {
+  border-bottom: none;
+}
+
+.match-timeline__event-left {
+  display: flex;
+  align-items: center;
+}
+
+.match-timeline__event-time {
+  font-size: 12px;
+  font-weight: 700;
+  font-family: 'IBM Plex Mono', monospace;
+  color: #a8adb8;
+  text-align: center;
+}
+
+.match-timeline__event-center {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.match-timeline__event-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: rgba(var(--event-color-rgb), 0.15);
+  border: 2px solid var(--event-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: default;
+}
+
+.match-timeline__event-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  justify-content: center;
+}
+
+.match-timeline__event-type {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--event-color);
+}
+
+.match-timeline__event-player {
+  font-size: 12px;
+  color: #f0f2f5;
+  font-weight: 500;
+}
+
+.match-timeline__event-team {
+  font-size: 11px;
+  color: #a8adb8;
+}
+
+.match-timeline__event-description {
+  font-size: 11px;
+  color: #8b95a5;
+  font-style: italic;
+}
+
+/* Compact mode */
+.match-timeline--compact .match-timeline__event-player,
+.match-timeline--compact .match-timeline__event-team,
+.match-timeline--compact .match-timeline__event-description {
+  display: none;
+}
+
+/* Event type specific styles */
+.match-timeline__event--goal {
+  background: rgba(216, 91, 91, 0.03);
+  border-left-color: #d85b5b;
+}
+
+.match-timeline__event--yellow_card {
+  background: rgba(255, 184, 77, 0.03);
+  border-left-color: #ffb84d;
+}
+
+.match-timeline__event--red_card {
+  background: rgba(255, 92, 92, 0.03);
+  border-left-color: #ff5c5c;
+}
+
+.match-timeline__event--substitution {
+  background: rgba(139, 127, 216, 0.03);
+  border-left-color: #8b7fd8;
+}
+
+.match-timeline__event--injury {
+  background: rgba(255, 184, 77, 0.03);
+  border-left-color: #ffb84d;
+}
+
+.match-timeline__event--kickoff {
+  background: rgba(74, 158, 255, 0.03);
+  border-left-color: #4a9eff;
+}
+
+.match-timeline__event--half_time {
+  background: rgba(139, 149, 165, 0.03);
+  border-left-color: #8b95a5;
+}
+
+.match-timeline__event--full_time {
+  background: rgba(107, 191, 89, 0.03);
+  border-left-color: #6bbf59;
+}
+
+/* Scrollbar styling */
+.match-timeline::-webkit-scrollbar {
+  width: 6px;
+}
+
+.match-timeline::-webkit-scrollbar-track {
+  background: var(--dark-bg-secondary);
+  border-radius: 3px;
+}
+
+.match-timeline::-webkit-scrollbar-thumb {
+  background: #8b95a5;
+  border-radius: 3px;
+}
+
+.match-timeline::-webkit-scrollbar-thumb:hover {
+  background: #a8adb8;
+}
+
+@media (max-width: 768px) {
+  .match-timeline__event {
+    grid-template-columns: 50px auto 1fr;
+    gap: 8px;
+    padding: 10px 8px;
+  }
+
+  .match-timeline__event-time {
+    font-size: 11px;
+  }
+
+  .match-timeline__event-dot {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+  }
+
+  .match-timeline__event-type {
+    font-size: 12px;
+  }
+
+  .match-timeline--compact .match-timeline__event-player,
+  .match-timeline__event-player,
+  .match-timeline__event-team,
+  .match-timeline__event-description {
+    display: none;
+  }
+}
