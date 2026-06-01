@@ -1,0 +1,40 @@
+
+> cartola-elifoot@0.1.0 test
+> node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage --verbose .tests/fm-phase2-components.test.js
+
+FAIL .tests/fm-phase2-components.test.js
+  ● Test suite failed to run
+
+    ReferenceError: TextEncoder is not defined
+
+      at Object.<anonymous> (node_modules/jsdom/node_modules/whatwg-url/lib/encoding.js:2:21)
+      at Object.<anonymous> (node_modules/jsdom/node_modules/whatwg-url/lib/url-state-machine.js:7:34)
+      at Object.<anonymous> (node_modules/jsdom/node_modules/whatwg-url/lib/URL-impl.js:2:13)
+      at Object.<anonymous> (node_modules/jsdom/node_modules/whatwg-url/lib/URL.js:499:14)
+      at Object.<anonymous> (node_modules/jsdom/node_modules/whatwg-url/webidl2js-wrapper.js:3:13)
+      at Object.<anonymous> (node_modules/jsdom/node_modules/whatwg-url/index.js:3:34)
+      at Object.<anonymous> (node_modules/jsdom/lib/api.js:8:19)
+
+(node:12264) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+----------------------|---------|----------|---------|---------|-------------------
+File                  | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+----------------------|---------|----------|---------|---------|-------------------
+All files             |       0 |        0 |       0 |       0 |                   
+ animacao.js          |       0 |        0 |       0 |       0 | 5-175             
+ api.js               |       0 |        0 |       0 |       0 | 3-87              
+ estado.js            |       0 |        0 |       0 |       0 | 5-139             
+ historico.js         |       0 |        0 |       0 |       0 | 10-193            
+ narracao-extended.js |       0 |        0 |       0 |       0 | 6-191             
+ narracao.js          |       0 |        0 |       0 |       0 | 5-64              
+ simulacao.js         |       0 |        0 |       0 |       0 | 5-183             
+ standings.js         |       0 |        0 |       0 |       0 | 15-137            
+----------------------|---------|----------|---------|---------|-------------------
+Jest: Coverage for branches (0%) does not meet "global" threshold (40%)
+Jest: Coverage for lines (0%) does not meet "global" threshold (50%)
+Jest: Coverage for functions (0%) does not meet "global" threshold (50%)
+Test Suites: 1 failed, 1 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        0.619 s
+Ran all test suites matching .tests/fm-phase2-components.test.js.
