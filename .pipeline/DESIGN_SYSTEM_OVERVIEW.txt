@@ -1,0 +1,192 @@
+================================================================================
+CARTOLA ELIFOOT — COMPREHENSIVE DESIGN SYSTEM CREATED
+================================================================================
+
+Location: .pipeline/design-system.md (2,311 lines)
+Status: Complete and Ready for Implementation
+Date: June 2026
+
+================================================================================
+DOCUMENT STRUCTURE (15 MAJOR SECTIONS)
+================================================================================
+
+1. DESIGN PRINCIPLES (5 Core Pillars)
+   - Football Authenticity
+   - Clarity Through Hierarchy
+   - Accessibility First
+   - Responsive & Mobile-First
+   - Animation with Purpose
+
+2. COLOR PALETTE (Complete with WCAG AA+ Compliance)
+   - Primary Colors: Indigo #4f46e5 + Gradients
+   - Semantic Colors: Success, Warning, Error, Info
+   - Dark Mode: Complete alternative palette
+   - CSS Variables: Ready to use throughout app
+
+3. TYPOGRAPHY SYSTEM
+   - Font Stack: System fonts for performance
+   - Type Scale: Modular 1.125x multiplier
+   - Classes: h1-h6, body, labels, captions
+   - Responsive adjustments: Mobile-first scaling
+
+4. SPACING SYSTEM (8px Base Unit)
+   - Scale: xs (4px) to 5xl (96px)
+   - Usage patterns: Padding, margins, gaps
+   - CSS Variables: Consistent application
+   - Mobile adjustments: 25% reduction on small screens
+
+5. COMPONENT LIBRARY
+   - Buttons: Primary, Secondary, Outline, Danger variants
+   - Forms: Inputs, checkboxes, radios, selects
+   - Cards: Header, body, footer structure
+   - Tables: Responsive design patterns
+   - Badges: Success, warning, error, info states
+   - Alerts: Contextual messaging
+
+6. ICONS & IMAGERY
+   - Icon Categories: Match events, navigation, player status
+   - Sizing: 16px to 32px+ with proper scaling
+   - Team Crests: 40px to 160px responsive
+   - Player Photos: Grayscale/color variants
+   - Pitch Visualization: Field with player positions
+
+7. INTERACTIVE STATES
+   - Buttons: Default → Hover → Active → Focus → Disabled
+   - Form Inputs: Default → Focus → Filled → Valid → Error
+   - Cards: Unselected → Hover → Selected
+   - Links: Default → Visited → Hover → Focus → Active
+   - Loading: Spinners and skeleton screens
+
+8. DARK MODE
+   - Complete palette with verified contrast ratios
+   - Image adjustments and accent colors
+   - CSS variables for automatic switching
+   - Optional manual toggle button included
+
+9. RESPONSIVE BREAKPOINTS
+   - Mobile: < 640px
+   - Tablet: 640px - 1024px
+   - Desktop: 1024px - 1440px
+   - Wide Desktop: > 1440px
+   - Touch-friendly: 44x44px minimum targets
+
+10. ACCESSIBILITY GUIDELINES
+    - WCAG AA+ Compliance (4.5:1 contrast minimum)
+    - Semantic HTML: Proper structure and landmarks
+    - Keyboard Navigation: Tab, Enter, Space, Arrow keys
+    - Screen Reader: Alt text, ARIA labels, live regions
+    - Color & Meaning: Never color-only indicators
+    - Motion: Respects prefers-reduced-motion
+
+11. ANIMATION & MICRO-INTERACTIONS
+    - Button press feedback
+    - Form validation animations
+    - Goal celebration (primary celebration interaction)
+    - Match narrative animations (slide-in, card events)
+    - Loading states (spinner, shimmer)
+    - Page transitions
+    - Motion preferences respected throughout
+
+12. VISUAL EXAMPLES (ASCII Mockups)
+    - Home Screen: Club selection grid
+    - Formation Selection: Tactical formation + player selection
+    - Match Simulation: Live narrative with animations
+    - Results Screen: Match summary and highlights
+    - Standings Table: League classification
+
+13. IMPLEMENTATION ROADMAP
+    - Phase 1: Foundation (2 weeks)
+    - Phase 2: Components (2 weeks)
+    - Phase 3: Features (2 weeks)
+    - Phase 4: Polish & Testing (2 weeks)
+
+14. USAGE EXAMPLES
+    - CSS variables usage
+    - Component HTML structure
+    - Form patterns
+    - Best practices
+
+15. DESIGN SYSTEM GOVERNANCE
+    - Contribution guidelines
+    - Review checklist
+    - Maintenance schedule
+
+================================================================================
+KEY METRICS & SPECIFICATIONS
+================================================================================
+
+Color Palette:
+  - Primary Accent: #4f46e5 (indigo)
+  - Neutral Background: #f8f9fa (light mode), #1a1a2e (dark mode)
+  - Success: #15803d on #dcfce7
+  - Warning: #7c2d12 on #fef3c7
+  - Error: #b91c1c on #fee2e2
+  - Info: #1e40af on #eff6ff
+
+Contrast Ratios (All WCAG AA+):
+  - Primary text on page: 20:1 ✓ AAA
+  - Secondary text on page: 7.5:1 ✓ AA
+  - Buttons on white: 8.5:1 ✓ AA
+  - All action colors: 7.5:1+ ✓ AA
+
+Typography:
+  - Font Stack: System fonts (-apple-system, 'Segoe UI', sans-serif)
+  - Scale: 0.75rem to 3.157rem (modular)
+  - Line Height: 1.2-1.6 for readability
+  - Weights: 400, 500, 600, 700
+
+Spacing:
+  - Base Unit: 8px (0.5rem)
+  - Scale: xs (4px) to 5xl (96px)
+  - Standard Padding: 1rem, 1.5rem, 2rem
+  - Grid Gap: 0.75rem to 2rem responsive
+
+Responsive:
+  - Mobile First Approach
+  - Touch Targets: 44x44px minimum
+  - Breakpoints: 640px, 1024px, 1440px
+  - Adaptive Typography & Spacing
+
+Animation Timing:
+  - Fast: 0.15s (immediate feedback)
+  - Normal: 0.3s (standard transitions)
+  - Slow: 0.6s (celebrations)
+  - Easing: cubic-bezier functions included
+
+================================================================================
+READY FOR IMPLEMENTATION
+================================================================================
+
+This design system is production-ready and includes:
+
+✓ Complete color palette with WCAG AA+ compliance verification
+✓ Typography system with responsive scaling
+✓ Spacing scale with CSS variables
+✓ Component library with all states documented
+✓ Dark mode support with full palette
+✓ Responsive design patterns for all breakpoints
+✓ Accessibility guidelines (WCAG AA+)
+✓ Animation and micro-interaction standards
+✓ Icon system guidelines
+✓ Implementation roadmap (8 weeks)
+✓ Usage examples and best practices
+✓ Governance and maintenance guidelines
+
+The design system is football-themed, accessible, responsive, and optimized
+for both desktop and mobile gameplay. All visual elements support dark mode,
+keyboard navigation, screen readers, and respect user motion preferences.
+
+================================================================================
+NEXT STEPS
+================================================================================
+
+1. Extract CSS variables from Section 2 and create variables.css
+2. Apply typography classes from Section 3 to all HTML pages
+3. Implement spacing utilities from Section 4
+4. Build component library from Section 5
+5. Add animations from Section 11
+6. Run accessibility audit against Section 10
+7. Test on all responsive breakpoints (Section 9)
+8. Validate dark mode implementation (Section 8)
+
+================================================================================
