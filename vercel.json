@@ -1,14 +1,9 @@
 {
   "version": 2,
+  "name": "cartola-elifoot",
   "public": true,
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "/api/:path*"
-    },
-    {
-      "source": "/:path*",
-      "destination": "/index.html"
-    }
-  ]
+  "buildCommand": "npm install",
+  "env": {
+    "NODE_ENV": "production"
+  }
 }
