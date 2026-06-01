@@ -1,0 +1,183 @@
+/* Layout */
+* { box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f5f5f5;
+}
+
+header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+/* Club selector */
+.clubs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.club-card {
+  background: white;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.club-card:hover {
+  border-color: #667eea;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.club-card.selected {
+  border-color: #667eea;
+  background: #f0f4ff;
+}
+
+/* Players */
+.player-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.player-card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.player-card input[type="checkbox"] {
+  cursor: pointer;
+}
+
+.player-card.selected {
+  background: #f0f4ff;
+  border-color: #667eea;
+}
+
+/* Narrative */
+#naracao {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 1rem;
+  min-height: 300px;
+  max-height: 600px;
+  overflow-y: auto;
+  line-height: 1.6;
+}
+
+.lance {
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  border-left: 3px solid #ccc;
+}
+
+.lance-gol {
+  border-left-color: #22c55e;
+  background: #f0fdf4;
+  font-weight: bold;
+  color: #16a34a;
+}
+
+.lance-falta {
+  border-left-color: #f59e0b;
+  background: #fffbeb;
+}
+
+.lance-escanteio {
+  border-left-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.lance-chute-defendido {
+  border-left-color: #f59e0b;
+}
+
+/* Score display */
+.score {
+  font-size: 3rem;
+  font-weight: bold;
+  text-align: center;
+  margin: 1rem 0;
+  color: #333;
+}
+
+/* Buttons */
+button {
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover:not(:disabled) {
+  background: #5a67d8;
+}
+
+button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* Loading */
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 2rem auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Error message */
+.error {
+  background: #fee;
+  color: #c00;
+  padding: 1rem;
+  border-radius: 6px;
+  margin: 1rem 0;
+  display: none;
+}
+
+.error.show {
+  display: block;
+}
+
+/* Mobile-first */
+@media (max-width: 640px) {
+  .clubs-grid { grid-template-columns: repeat(2, 1fr); }
+  .player-list { grid-template-columns: 1fr; }
+  .score { font-size: 2rem; }
+  #naracao { min-height: 200px; }
+}

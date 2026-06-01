@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cartola Elifoot - Selecione um Clube</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <h1>Cartola Elifoot</h1>
+    <p>Gerencie seu clube, escalações e partidas!</p>
+  </header>
+
+  <div class="container">
+    <h2>Escolha um Clube para Gerenciar</h2>
+
+    <div id="loading" class="spinner" style="display: none;"></div>
+
+    <div id="error" class="error"></div>
+
+    <div id="clubs-container" class="clubs-grid"></div>
+
+    <p id="fallback-text" style="display: none;">Escolha um clube da lista</p>
+  </div>
+
+  <script type="module">
+    import * as api from './js/api.js';
+    import * as estado from './js/estado.js';
+
+    async function inicializarPagina() {
+      const loading = document.getElementById('loading');
+      const error = document.getElementById('error');
+      const clubsContainer = document.getElementById('clubs-container');
+      const fallbackText = document.getElementById('fallback-text');
+
+      loading.style.display = 'block';
+
+      try {
+        const clubs = await api.getClubs();
+
+        if (!clubs || clubs.length === 0) {
+          throw new Error('No clubs returned');
+        }
+
+        loading.style.display = 'none';
+
+        clubs.forEach(club => {
+          const card = document.createElement('div');
+          card.className = 'club-card';
+          card.innerHTML = `
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚽</div>
+            <div style="font-weight: bold;">${club.nome}</div>
+            <div style="font-size: 0.9rem; color: #666;">${club.abreviacao}</div>
+          `;
+
+          card.addEventListener('click', () => {
+            estado.setEstado({ clubeId: club.id });
+            window.location.href = 'escalacao.html';
+          });
+
+          clubsContainer.appendChild(card);
+        });
+      } catch (err) {
+        console.error('Error loading clubs:', err);
+        loading.style.display = 'none';
+        error.textContent = 'Erro ao carregar clubes. Usando dados de fallback.';
+        error.classList.add('show');
+        fallbackText.style.display = 'block';
+      }
+    }
+
+    inicializarPagina();
+  </script>
+</body>
+</html>

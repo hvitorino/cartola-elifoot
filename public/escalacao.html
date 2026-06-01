@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cartola Elifoot - Escalação</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <h1 id="club-name">Escalação</h1>
+    <p id="opponent-info"></p>
+  </header>
+
+  <div class="container">
+    <div>
+      <h3>Esquema Tático</h3>
+      <div style="margin: 1rem 0;">
+        <label>
+          <input type="radio" name="formacao" value="4-4-2" checked>
+          4-4-2 (1 GK, 2 LAT, 2 ZAG, 4 MEI, 2 ATA)
+        </label>
+      </div>
+      <div style="margin: 1rem 0;">
+        <label>
+          <input type="radio" name="formacao" value="4-3-3">
+          4-3-3 (1 GK, 2 LAT, 2 ZAG, 3 MEI, 3 ATA)
+        </label>
+      </div>
+    </div>
+
+    <div>
+      <h3>Selecione 11 Jogadores</h3>
+      <div id="validation-message" style="color: #c00; margin: 1rem 0;"></div>
+      <div id="players-container" class="player-list"></div>
+    </div>
+
+    <div style="text-align: center; margin: 2rem 0;">
+      <button id="confirm-button" disabled onclick="confirmarEscalacao()">
+        Confirmar & Simular
+      </button>
+    </div>
+
+    <div id="error" class="error"></div>
+  </div>
+
+  <script type="module">
+    import * as api from './js/api.js';
+    import * as estado from './js/estado.js';
+
+    const POSICOES = {
+      1: 'GOL',
+      2: 'LAT',
+      3: 'ZAG',
+      4: 'MEI',
+      5: 'ATA'
+    };
+
+    const REQUERIMENTOS_FORMACAO = {
+      '4-4-2': { 1: 1, 2: 2, 3: 2, 4: 4, 5: 2 },
+      '4-3-3': { 1: 1, 2: 2, 3: 2, 4: 3, 5: 3 }
+    };
+
+    let jogadoresPorPosicao = {};
+    let formacaoAtual = '4-4-2';
+    let jogadoreSelecionados = {};
+
+    async function inicializarPagina() {
+      const estadoAtual = estado.getEstado();
+
+      if (!estadoAtual.clubeId) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      // Load club name
+      const clubs = await api.getClubs();
+      const club = clubs.find(c => c.id === estadoAtual.clubeId);
+      if (club) {
+        document.getElementById('club-name').textContent = club.nome;
+      }
+
+      // Load players for club
+      const players = await api.getPlayersByClub(estadoAtual.clubeId);
+
+      // Group by position
+      POSICOES[1] = 'GOL';
+      for (const pos of [1, 2, 3, 4, 5]) {
+        jogadoresPorPosicao[pos] = players.filter(p => p.posicao_id === pos);
+      }
+
+      renderJogadores();
+      atualizarValidacao();
+
+      // Add radio listeners
+      document.querySelectorAll('input[name="formacao"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+          formacaoAtual = e.target.value;
+          atualizarValidacao();
+        });
+      });
+    }
+
+    function renderJogadores() {
+      const container = document.getElementById('players-container');
+      container.innerHTML = '';
+
+      for (const [posId, posNome] of Object.entries(POSICOES)) {
+        const posNum = parseInt(posId);
+        const jogadores = jogadoresPorPosicao[posNum] || [];
+
+        const section = document.createElement('div');
+        section.style.marginBottom = '2rem';
+        section.innerHTML = `<h4>${posNome}</h4>`;
+
+        jogadores.forEach(jogador => {
+          const card = document.createElement('div');
+          card.className = 'player-card';
+          card.id = `player-${jogador.atleta_id}`;
+
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.value = jogador.atleta_id;
+
+          checkbox.addEventListener('change', (e) => {
+            if (e.target.checked) {
+              jogadoreSelecionados[jogador.atleta_id] = jogador;
+            } else {
+              delete jogadoreSelecionados[jogador.atleta_id];
+            }
+
+            if (card.classList.contains('selected')) {
+              card.classList.remove('selected');
+            } else {
+              card.classList.add('selected');
+            }
+
+            atualizarValidacao();
+          });
+
+          card.appendChild(checkbox);
+
+          const info = document.createElement('div');
+          info.innerHTML = `
+            <div style="font-weight: bold;">${jogador.nome}</div>
+            <div style="font-size: 0.9rem; color: #666;">Média: ${jogador.media_num.toFixed(1)}</div>
+          `;
+
+          card.appendChild(info);
+          section.appendChild(card);
+        });
+
+        container.appendChild(section);
+      }
+    }
+
+    function atualizarValidacao() {
+      const requerimentos = REQUERIMENTOS_FORMACAO[formacaoAtual];
+      let valido = true;
+      let mensagem = '';
+
+      for (const [posId, quantidade] of Object.entries(requerimentos)) {
+        const posNum = parseInt(posId);
+        const selecionadosNesta = Object.values(jogadoreSelecionados).filter(
+          j => j.posicao_id === posNum
+        ).length;
+
+        if (selecionadosNesta < quantidade) {
+          valido = false;
+          const posNome = POSICOES[posNum];
+          const faltam = quantidade - selecionadosNesta;
+          mensagem += `Faltam ${faltam} ${posNome}. `;
+        }
+      }
+
+      const totalSelecionados = Object.keys(jogadoreSelecionados).length;
+      if (totalSelecionados !== 11) {
+        valido = false;
+        if (!mensagem) {
+          mensagem = `Selecione 11 jogadores (${totalSelecionados} selecionados)`;
+        }
+      }
+
+      document.getElementById('validation-message').textContent = mensagem;
+      document.getElementById('confirm-button').disabled = !valido;
+    }
+
+    window.confirmarEscalacao = function() {
+      const escalacao = Object.values(jogadoreSelecionados);
+      estado.setEstado({
+        escalacaoAtual: escalacao,
+        esquemaTatico: formacaoAtual
+      });
+      window.location.href = 'simulacao.html';
+    };
+
+    inicializarPagina();
+  </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "buildCommand": "npm install",
+  "public": "public",
+  "functions": {
+    "server.js": { "memory": 1024 }
+  },
+  "routes": [
+    { "src": "/api/(.*)", "dest": "server.js" },
+    { "src": "/(.*)", "dest": "public/$1" }
+  ]
+}

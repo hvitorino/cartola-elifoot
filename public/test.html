@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cartola Elifoot - Browser Tests</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 1rem;
+      background: #f5f5f5;
+    }
+    .test-result {
+      margin: 0.5rem 0;
+      padding: 0.5rem;
+      border-radius: 4px;
+    }
+    .pass {
+      background: #d4edda;
+      color: #155724;
+    }
+    .fail {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    .test-section {
+      margin: 2rem 0;
+      background: white;
+      padding: 1rem;
+      border-radius: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-top: 0;
+      border-bottom: 2px solid #667eea;
+      padding-bottom: 0.5rem;
+    }
+    .summary {
+      background: white;
+      padding: 1rem;
+      border-radius: 6px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin: 1rem 0;
+    }
+    .summary.pass {
+      background: #d4edda;
+      color: #155724;
+    }
+    .summary.fail {
+      background: #f8d7da;
+      color: #721c24;
+    }
+  </style>
+</head>
+<body>
+  <h1>Cartola Elifoot Browser Test Suite</h1>
+  <div id="results"></div>
+
+  <script type="module">
+    import * as estado from './js/estado.js';
+    import * as api from './js/api.js';
+    import * as simulacao from './js/simulacao.js';
+    import * as narracao from './js/narracao.js';
+    import * as mockData from './js/mock_data.js';
+
+    let testCount = 0;
+    let passCount = 0;
+    let failCount = 0;
+    const failures = [];
+
+    function assert(condition, message) {
+      if (!condition) {
+        throw new Error(message);
+      }
+    }
+
+    function recordTest(name, passed, error) {
+      testCount++;
+      if (passed) {
+        passCount++;
+        addResult(name, true, null);
+      } else {
+        failCount++;
+        failures.push(`${name}: ${error}`);
+        addResult(name, false, error);
+      }
+    }
+
+    function addResult(name, passed, error) {
+      const resultsDiv = document.getElementById('results');
+      const resultDiv = document.createElement('div');
+      resultDiv.className = `test-result ${passed ? 'pass' : 'fail'}`;
+      resultDiv.textContent = `${passed ? '✓' : '✗'} ${name}`;
+      if (error) {
+        resultDiv.textContent += ` — ${error}`;
+      }
+      resultsDiv.appendChild(resultDiv);
+    }
+
+    async function runTest(name, fn) {
+      try {
+        await fn();
+        recordTest(name, true, null);
+      } catch (err) {
+        recordTest(name, false, err.message);
+      }
+    }
+
+    async function runTests() {
+      console.log('Starting browser tests...');
+
+      // ===== STATE MANAGEMENT TESTS =====
+      const stateSection = document.createElement('div');
+      stateSection.className = 'test-section';
+      stateSection.innerHTML = '<h2>State Management (estado.js)</h2>';
+      document.getElementById('results').appendChild(stateSection);
+
+      await runTest('estadoInicial() returns default state', () => {
+        const state = estado.estadoInicial();
+        assert(state.clubeId === null, 'clubeId should be null');
+        assert(state.rodadaAtual === 1, 'rodadaAtual should be 1');
+        assert(Array.isArray(state.escalacaoAtual), 'escalacaoAtual should be array');
+        assert(state.esquemaTatico === '4-4-2', 'esquemaTatico should be 4-4-2');
+      });
+
+      await runTest('setEstado() persists to localStorage', () => {
+        estado.resetEstado();
+        estado.setEstado({ clubeId: 5 });
+        const state = estado.getEstado();
+        assert(state.clubeId === 5, 'clubeId should be persisted');
+      });
+
+      await runTest('getEstado() retrieves persisted state', () => {
+        estado.setEstado({ clubeId: 10, rodadaAtual: 3 });
+        const state = estado.getEstado();
+        assert(state.clubeId === 10, 'clubeId should match');
+        assert(state.rodadaAtual === 3, 'rodadaAtual should match');
+      });
+
+      await runTest('salvarResultado() appends to historico', () => {
+        estado.resetEstado();
+        const resultado = { placar: { casa: 2, visitante: 1 }, lances: [] };
+        estado.salvarResultado(resultado);
+        const state = estado.getEstado();
+        assert(state.historico.length === 1, 'historico should have 1 item');
+        assert(state.historico[0].placar.casa === 2, 'Should store result');
+      });
+
+      await runTest('ultimoResultado() returns last match', () => {
+        estado.resetEstado();
+        estado.salvarResultado({ placar: { casa: 1, visitante: 0 } });
+        estado.salvarResultado({ placar: { casa: 2, visitante: 2 } });
+        const ultimo = estado.ultimoResultado();
+        assert(ultimo.placar.casa === 2, 'Should return last result');
+      });
+
+      await runTest('resetEstado() clears localStorage', () => {
+        estado.setEstado({ clubeId: 99 });
+        estado.resetEstado();
+        const state = estado.getEstado();
+        assert(state.clubeId === null, 'Should reset to initial');
+      });
+
+      // ===== MOCK DATA TESTS =====
+      const mockSection = document.createElement('div');
+      mockSection.className = 'test-section';
+      mockSection.innerHTML = '<h2>Mock Data (mock_data.js)</h2>';
+      document.getElementById('results').appendChild(mockSection);
+
+      await runTest('getClubs() returns 20 clubs', () => {
+        const clubs = mockData.getClubs();
+        assert(Array.isArray(clubs), 'Should return array');
+        assert(clubs.length === 20, 'Should have 20 clubs');
+        assert(clubs[0].id, 'Club should have id');
+        assert(clubs[0].nome, 'Club should have nome');
+      });
+
+      await runTest('getPlayers() returns 50+ players', () => {
+        const players = mockData.getPlayers();
+        assert(Array.isArray(players), 'Should return array');
+        assert(players.length >= 50, 'Should have 50+ players');
+        assert(players[0].atleta_id, 'Player should have atleta_id');
+        assert(typeof players[0].posicao_id === 'number', 'Player should have posicao_id');
+        assert(typeof players[0].media_num === 'number', 'Player should have media_num');
+      });
+
+      await runTest('Mock players distributed across positions 1-5', () => {
+        const players = mockData.getPlayers();
+        const positions = new Set(players.map(p => p.posicao_id));
+        assert(positions.has(1), 'Should have position 1');
+        assert(positions.has(2), 'Should have position 2');
+        assert(positions.has(3), 'Should have position 3');
+        assert(positions.has(4), 'Should have position 4');
+        assert(positions.has(5), 'Should have position 5');
+      });
+
+      await runTest('getPartidas() returns match data', () => {
+        const partidas = mockData.getPartidas();
+        assert(Array.isArray(partidas), 'Should return array');
+        assert(partidas.length >= 3, 'Should have at least 3 matches');
+        assert(typeof partidas[0].id === 'number', 'Match should have id');
+      });
+
+      // ===== SIMULATION TESTS =====
+      const simSection = document.createElement('div');
+      simSection.className = 'test-section';
+      simSection.innerHTML = '<h2>Match Simulation (simulacao.js)</h2>';
+      document.getElementById('results').appendChild(simSection);
+
+      await runTest('gerarPartida() returns match with 20-28 plays', () => {
+        const escalacao = mockData.getPlayers().slice(0, 11);
+        const adversario = {
+          nome: 'Adversário',
+          escalacao: mockData.getPlayers().slice(11, 22)
+        };
+        const partida = simulacao.gerarPartida(escalacao, adversario);
+        assert(partida.lances, 'Should have lances');
+        assert(partida.lances.length >= 20, 'Should have at least 20 plays');
+        assert(partida.lances.length <= 28, 'Should have at most 28 plays');
+      });
+
+      await runTest('gerarPartida() returns placar object', () => {
+        const escalacao = mockData.getPlayers().slice(0, 11);
+        const adversario = {
+          nome: 'Adversário',
+          escalacao: mockData.getPlayers().slice(11, 22)
+        };
+        const partida = simulacao.gerarPartida(escalacao, adversario);
+        assert(typeof partida.placar.casa === 'number', 'Should have casa score');
+        assert(typeof partida.placar.visitante === 'number', 'Should have visitante score');
+      });
+
+      await runTest('gerarPartida() returns destaques with highlights', () => {
+        const escalacao = mockData.getPlayers().slice(0, 11);
+        const adversario = {
+          nome: 'Adversário',
+          escalacao: mockData.getPlayers().slice(11, 22)
+        };
+        const partida = simulacao.gerarPartida(escalacao, adversario);
+        assert(partida.destaques, 'Should have destaques');
+        assert(partida.destaques.placar_final, 'Should have placar_final');
+        assert(Array.isArray(partida.destaques.artilheiros.casa), 'Should have scorers');
+      });
+
+      await runTest('Plays have required fields', () => {
+        const escalacao = mockData.getPlayers().slice(0, 11);
+        const adversario = {
+          nome: 'Adversário',
+          escalacao: mockData.getPlayers().slice(11, 22)
+        };
+        const partida = simulacao.gerarPartida(escalacao, adversario);
+        partida.lances.forEach(lance => {
+          assert(typeof lance.tipo === 'string', 'Lance should have tipo');
+          assert(typeof lance.minuto === 'number', 'Lance should have minuto');
+          assert(typeof lance.atacante === 'string', 'Lance should have atacante');
+          assert(lance.minuto >= 0 && lance.minuto <= 90, 'Minuto should be 0-90');
+        });
+      });
+
+      await runTest('Goals update placar correctly', () => {
+        const escalacao = mockData.getPlayers().slice(0, 11);
+        const adversario = {
+          nome: 'Adversário',
+          escalacao: mockData.getPlayers().slice(11, 22)
+        };
+        const partida = simulacao.gerarPartida(escalacao, adversario);
+        const goalCount = partida.lances.filter(l => l.tipo === 'gol').length;
+        const totalGoals = partida.placar.casa + partida.placar.visitante;
+        assert(goalCount === totalGoals, 'Goal count should match placar');
+      });
+
+      await runTest('Empty escalacao returns default strength', () => {
+        const escalacao = [];
+        const adversario = {
+          nome: 'Adversário',
+          escalacao: mockData.getPlayers().slice(0, 11)
+        };
+        const partida = simulacao.gerarPartida(escalacao, adversario);
+        assert(partida.placar, 'Should still generate match');
+      });
+
+      // ===== NARRATIVE TESTS =====
+      const narracaoSection = document.createElement('div');
+      narracaoSection.className = 'test-section';
+      narracaoSection.innerHTML = '<h2>Narrative (narracao.js)</h2>';
+      document.getElementById('results').appendChild(narracaoSection);
+
+      await runTest('narrarLance() returns string for gol', () => {
+        const lance = { tipo: 'gol', minuto: 15, atacante: 'Pelé', defensor: null };
+        const narrative = narracao.narrarLance(lance);
+        assert(typeof narrative === 'string', 'Should return string');
+        assert(narrative.length > 0, 'Should not be empty');
+        assert(!narrative.includes('{'), 'Should not have placeholders');
+      });
+
+      await runTest('narrarLance() handles all play types', () => {
+        const tipos = ['gol', 'chute_fora', 'chute_defendido', 'escanteio', 'falta'];
+        tipos.forEach(tipo => {
+          const lance = { tipo, minuto: 30, atacante: 'Player A', defensor: 'Player B' };
+          const narrative = narracao.narrarLance(lance);
+          assert(narrative.includes('30'), 'Should replace minuto');
+          assert(!narrative.includes('{'), 'Should not have placeholders');
+        });
+      });
+
+      await runTest('getPhrasesForType() returns array for valid type', () => {
+        const frases = narracao.getPhrasesForType('gol');
+        assert(Array.isArray(frases), 'Should return array');
+        assert(frases.length >= 3, 'Should have at least 3 phrases');
+      });
+
+      await runTest('Phrase replacement works for defensor', () => {
+        const lance = { tipo: 'falta', minuto: 45, atacante: 'Ronaldo', defensor: 'Ramos' };
+        const narrative = narracao.narrarLance(lance);
+        assert(narrative.includes('Ronaldo'), 'Should include atacante');
+        assert(narrative.includes('Ramos') || !narrative.includes('{defensor}'), 'Should replace defensor');
+      });
+
+      await runTest('Unknown play type returns fallback', () => {
+        const lance = { tipo: 'unknown', minuto: 60, atacante: 'Test', defensor: null };
+        const narrative = narracao.narrarLance(lance);
+        assert(typeof narrative === 'string', 'Should return string');
+      });
+
+      // ===== FORMATION VALIDATION TESTS =====
+      const formationSection = document.createElement('div');
+      formationSection.className = 'test-section';
+      formationSection.innerHTML = '<h2>Formation Validation</h2>';
+      document.getElementById('results').appendChild(formationSection);
+
+      await runTest('Can build 4-4-2 formation (1 GK, 2 LAT, 2 ZAG, 4 MEI, 2 ATA)', () => {
+        const players = mockData.getPlayers();
+        const gk = players.filter(p => p.posicao_id === 1).slice(0, 1);
+        const lat = players.filter(p => p.posicao_id === 2).slice(0, 2);
+        const zag = players.filter(p => p.posicao_id === 3).slice(0, 2);
+        const mei = players.filter(p => p.posicao_id === 4).slice(0, 4);
+        const ata = players.filter(p => p.posicao_id === 5).slice(0, 2);
+        const escalacao = [...gk, ...lat, ...zag, ...mei, ...ata];
+        assert(escalacao.length === 11, 'Should have 11 players');
+      });
+
+      await runTest('Can build 4-3-3 formation (1 GK, 2 LAT, 2 ZAG, 3 MEI, 3 ATA)', () => {
+        const players = mockData.getPlayers();
+        const gk = players.filter(p => p.posicao_id === 1).slice(0, 1);
+        const lat = players.filter(p => p.posicao_id === 2).slice(0, 2);
+        const zag = players.filter(p => p.posicao_id === 3).slice(0, 2);
+        const mei = players.filter(p => p.posicao_id === 4).slice(0, 3);
+        const ata = players.filter(p => p.posicao_id === 5).slice(0, 3);
+        const escalacao = [...gk, ...lat, ...zag, ...mei, ...ata];
+        assert(escalacao.length === 11, 'Should have 11 players');
+      });
+
+      await runTest('Can build 3-5-2 formation (1 GK, 1 LAT, 3 ZAG, 5 MEI, 2 ATA)', () => {
+        const players = mockData.getPlayers();
+        const gk = players.filter(p => p.posicao_id === 1).slice(0, 1);
+        const lat = players.filter(p => p.posicao_id === 2).slice(0, 1);
+        const zag = players.filter(p => p.posicao_id === 3).slice(0, 3);
+        const mei = players.filter(p => p.posicao_id === 4).slice(0, 5);
+        const ata = players.filter(p => p.posicao_id === 5).slice(0, 2);
+        const escalacao = [...gk, ...lat, ...zag, ...mei, ...ata];
+        assert(escalacao.length === 11, 'Should have 11 players');
+      });
+
+      // ===== API TESTS =====
+      const apiSection = document.createElement('div');
+      apiSection.className = 'test-section';
+      apiSection.innerHTML = '<h2>API Module (api.js)</h2>';
+      document.getElementById('results').appendChild(apiSection);
+
+      await runTest('api.getClubs() returns clubs (or fallback)', async () => {
+        const clubs = await api.getClubs();
+        assert(Array.isArray(clubs), 'Should return array');
+        assert(clubs.length > 0, 'Should have clubs');
+      });
+
+      await runTest('api.getPlayers() returns players (or fallback)', async () => {
+        const players = await api.getPlayers();
+        assert(Array.isArray(players), 'Should return array');
+        assert(players.length > 0, 'Should have players');
+      });
+
+      await runTest('api.getPlayersByClub() filters correctly', async () => {
+        const players = await api.getPlayersByClub(1);
+        assert(Array.isArray(players), 'Should return array');
+        players.forEach(p => {
+          assert(p.clube_id === 1, 'All players should be from club 1');
+        });
+      });
+
+      await runTest('api.getPartidas() returns matches (or fallback)', async () => {
+        const partidas = await api.getPartidas(1);
+        assert(Array.isArray(partidas), 'Should return array');
+      });
+
+      // Print summary
+      const summarySection = document.createElement('div');
+      summarySection.className = 'test-section';
+      document.getElementById('results').appendChild(summarySection);
+
+      const summary = document.createElement('div');
+      summary.className = `summary ${failCount === 0 ? 'pass' : 'fail'}`;
+      summary.textContent = `Tests: ${testCount} | Passed: ${passCount} | Failed: ${failCount}`;
+      summarySection.appendChild(summary);
+
+      if (failures.length > 0) {
+        const failuresDiv = document.createElement('div');
+        failuresDiv.style.marginTop = '1rem';
+        failuresDiv.innerHTML = '<h3>Failures:</h3>';
+        failures.forEach(f => {
+          const p = document.createElement('p');
+          p.style.color = '#721c24';
+          p.textContent = f;
+          failuresDiv.appendChild(p);
+        });
+        summarySection.appendChild(failuresDiv);
+      }
+
+      console.log(`Test results: ${passCount}/${testCount} passed`);
+      if (failCount > 0) {
+        console.error('Test failures detected');
+      }
+    }
+
+    // Run tests when page loads
+    runTests().catch(err => {
+      console.error('Test suite error:', err);
+      const resultsDiv = document.getElementById('results');
+      const errorDiv = document.createElement('div');
+      errorDiv.className = 'test-result fail';
+      errorDiv.textContent = `Fatal error: ${err.message}`;
+      resultsDiv.appendChild(errorDiv);
+    });
+  </script>
+</body>
+</html>

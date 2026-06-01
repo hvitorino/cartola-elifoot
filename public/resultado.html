@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cartola Elifoot - Resultado</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <h1 id="final-score">0 — 0</h1>
+    <p id="match-info">Resultado da Partida</p>
+  </header>
+
+  <div class="container">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0;">
+      <div id="home-stats">
+        <h3 id="home-name">Time da Casa</h3>
+        <div>Jogadores: <span id="home-players">-</span></div>
+        <div>Posse: <span id="home-possession">-</span>%</div>
+        <div>Artilheiros: <span id="home-scorers">-</span></div>
+      </div>
+
+      <div id="away-stats">
+        <h3 id="away-name">Visitante</h3>
+        <div>Jogadores: <span id="away-players">-</span></div>
+        <div>Posse: <span id="away-possession">-</span>%</div>
+        <div>Artilheiros: <span id="away-scorers">-</span></div>
+      </div>
+    </div>
+
+    <div style="background: white; padding: 1.5rem; border-radius: 6px; margin: 2rem 0;">
+      <h3>Destaques</h3>
+      <div id="highlights">
+        <p>Carregando destaques...</p>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin: 2rem 0;">
+      <button onclick="proximaRodada()">Próxima Rodada ></button>
+    </div>
+  </div>
+
+  <script type="module">
+    import * as api from './js/api.js';
+    import * as estado from './js/estado.js';
+
+    async function inicializarPagina() {
+      const estadoAtual = estado.getEstado();
+
+      if (!estadoAtual.ultimaPartida) {
+        window.location.href = 'escalacao.html';
+        return;
+      }
+
+      const ultima = estadoAtual.ultimaPartida;
+
+      // Display final score
+      document.getElementById('final-score').textContent =
+        `${ultima.placar.casa} — ${ultima.placar.visitante}`;
+
+      document.getElementById('match-info').textContent =
+        `${ultima.adversario.nome}`;
+
+      // Get club names
+      const clubs = await api.getClubs();
+      const clubAtual = clubs.find(c => c.id === estadoAtual.clubeId);
+
+      document.getElementById('home-name').textContent = clubAtual?.nome || 'Seu Time';
+      document.getElementById('away-name').textContent = ultima.adversario.nome;
+
+      // Display stats
+      document.getElementById('home-players').textContent = ultima.escalacao.length;
+      document.getElementById('away-players').textContent = ultima.adversario.escalacao.length;
+
+      // Calculate possession (home team 60% by default in simulation)
+      document.getElementById('home-possession').textContent = '60';
+      document.getElementById('away-possession').textContent = '40';
+
+      // Display scorers
+      if (ultima.destaques?.artilheiros?.casa?.length > 0) {
+        const scorers = ultima.destaques.artilheiros.casa
+          .map(s => `${s.nome} (${s.gols})`)
+          .join(', ');
+        document.getElementById('home-scorers').textContent = scorers;
+      } else {
+        document.getElementById('home-scorers').textContent = 'Nenhum gol';
+      }
+
+      if (ultima.destaques?.artilheiros?.visitante?.length > 0) {
+        const scorers = ultima.destaques.artilheiros.visitante
+          .map(s => `${s.nome} (${s.gols})`)
+          .join(', ');
+        document.getElementById('away-scorers').textContent = scorers;
+      } else {
+        document.getElementById('away-scorers').textContent = 'Nenhum gol';
+      }
+
+      // Display highlights
+      const highlightsDiv = document.getElementById('highlights');
+      highlightsDiv.innerHTML = '';
+
+      const melhorJogadorCasa = ultima.destaques?.melhor_jogador?.casa;
+      const melhorJogadorVisitante = ultima.destaques?.melhor_jogador?.visitante;
+
+      if (melhorJogadorCasa?.nome) {
+        const p = document.createElement('p');
+        p.textContent = `MVP (Casa): ${melhorJogadorCasa.nome} (Média: ${melhorJogadorCasa.media_num.toFixed(1)})`;
+        highlightsDiv.appendChild(p);
+      }
+
+      if (melhorJogadorVisitante?.nome) {
+        const p = document.createElement('p');
+        p.textContent = `MVP (Visitante): ${melhorJogadorVisitante.nome} (Média: ${melhorJogadorVisitante.media_num.toFixed(1)})`;
+        highlightsDiv.appendChild(p);
+      }
+
+      // Save result to history
+      estado.salvarResultado(ultima);
+    }
+
+    window.proximaRodada = function() {
+      const estadoAtual = estado.getEstado();
+      const novaRodada = (estadoAtual.rodadaAtual || 1) + 1;
+      estado.setEstado({
+        rodadaAtual: novaRodada,
+        escalacaoAtual: [],
+        esquemaTatico: '4-4-2'
+      });
+      window.location.href = 'escalacao.html';
+    };
+
+    inicializarPagina();
+  </script>
+</body>
+</html>
