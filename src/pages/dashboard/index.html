@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Cartola Elifoot</title>
+  <link rel="stylesheet" href="/public/css/_variables.css">
+  <link rel="stylesheet" href="/public/css/main.css">
+  <link rel="stylesheet" href="/src/shared/styles/responsive.css">
+  <link rel="stylesheet" href="/src/pages/dashboard/dashboard.module.css">
+</head>
+<body>
+  <div id="app">
+    <div id="header-root"></div>
+
+    <main class="dashboard-container">
+      <!-- Hero section -->
+      <section class="dashboard-hero">
+        <div class="matchday-info">
+          <div class="matchday-title">
+            <span class="matchday-number">MATCHDAY 15</span>
+            <span class="matchday-season">SEASON 2024/25</span>
+          </div>
+          <div class="matchday-date">Thursday, November 15, 2024</div>
+        </div>
+
+        <div class="score-stats">
+          <div class="stat-item">
+            <div class="stat-label">YOUR SCORE</div>
+            <div class="stat-value" id="user-score">87.3</div>
+            <div class="stat-unit">PTS</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">TEAM RANK</div>
+            <div class="stat-value" id="team-rank">4,234</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">CHANGE</div>
+            <div class="stat-value stat-positive" id="score-change">+5</div>
+            <div class="stat-unit">PTS</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">TEAM AVG</div>
+            <div class="stat-value" id="team-avg">7.8</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Content grid: Lineup | Formation | Matches -->
+      <div class="dashboard-grid">
+        <!-- Column 1: Lineup Overview -->
+        <section class="lineup-overview">
+          <h2 class="section-title">LINEUP OVERVIEW</h2>
+          <div class="lineup-content">
+            <div class="lineup-stat">
+              <span class="label">Players:</span>
+              <span class="value" id="selected-count">11</span>
+            </div>
+            <div class="lineup-stat">
+              <span class="label">Fitness:</span>
+              <span class="value" id="avg-fitness">94%</span>
+            </div>
+            <div class="lineup-stat">
+              <span class="label">Formation:</span>
+              <span class="value" id="formation">4-3-3</span>
+            </div>
+            <div class="lineup-stat status">
+              <span class="label">Status:</span>
+              <span class="value badge-success">CONFIRMED ✓</span>
+            </div>
+          </div>
+
+          <div class="lineup-divider"></div>
+
+          <div class="rating-stats">
+            <div class="rating-label">PLAYERS RATING</div>
+            <div class="rating-item">
+              <span class="label">Avg:</span>
+              <span class="value mono" id="rating-avg">7.8</span>
+            </div>
+            <div class="rating-item">
+              <span class="label">Highest:</span>
+              <span class="value" id="rating-highest">8.7</span>
+            </div>
+            <div class="rating-item">
+              <span class="label">Lowest:</span>
+              <span class="value" id="rating-lowest">6.5</span>
+            </div>
+            <div class="rating-item">
+              <span class="label">Injuries:</span>
+              <span class="value" id="injury-count">0</span>
+            </div>
+            <div class="rating-item">
+              <span class="label">Suspensions:</span>
+              <span class="value" id="suspension-count">1</span>
+            </div>
+          </div>
+
+          <div class="lineup-actions">
+            <button class="btn btn-secondary" id="edit-lineup-btn">EDIT LINEUP</button>
+            <button class="btn btn-primary" id="confirm-lineup-btn">CONFIRM</button>
+          </div>
+        </section>
+
+        <!-- Column 2: Formation Board (Compact) -->
+        <section class="formation-section">
+          <h2 class="section-title">FORMATION</h2>
+          <div id="formation-board-compact" class="formation-board-container">
+            <!-- FormationBoard component inserted here -->
+          </div>
+        </section>
+
+        <!-- Column 3: Today's Matches -->
+        <section class="todays-matches">
+          <h2 class="section-title">TODAY'S MATCHES</h2>
+          <div id="matches-list" class="matches-container">
+            <!-- MatchCard components inserted here -->
+          </div>
+        </section>
+      </div>
+
+      <!-- Recent Matches Section -->
+      <section class="recent-matches">
+        <h2 class="section-title">RECENT MATCHES (Last 5 Gameweeks)</h2>
+        <div id="recent-matches-carousel" class="carousel-container">
+          <!-- MatchCard components (carousel) inserted here -->
+        </div>
+      </section>
+
+      <!-- League Standings Section -->
+      <section class="league-standings">
+        <h2 class="section-title">LEAGUE STANDINGS - TOP 10</h2>
+        <div id="standings-table" class="standings-container">
+          <!-- StandingsTable component inserted here -->
+        </div>
+        <div class="standings-actions">
+          <button class="btn btn-secondary" id="view-full-table-btn">VIEW FULL TABLE</button>
+          <button class="btn btn-secondary" id="next-opponent-btn">NEXT OPPONENT</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="/src/pages/dashboard/dashboard.js"></script>
+</body>
+</html>

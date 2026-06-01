@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lineup Selection - Cartola Elifoot</title>
+  <link rel="stylesheet" href="/public/css/_variables.css">
+  <link rel="stylesheet" href="/public/css/main.css">
+  <link rel="stylesheet" href="/src/shared/styles/responsive.css">
+  <link rel="stylesheet" href="/src/pages/escalacao/escalacao.module.css">
+</head>
+<body>
+  <div id="app">
+    <div id="header-root"></div>
+
+    <main class="escalacao-container">
+      <section class="escalacao-header">
+        <h1>TEAM LINEUP SELECTION</h1>
+        <p class="subtitle">Choose 11 players and set your formation strategy</p>
+      </section>
+
+      <div class="escalacao-grid">
+        <!-- Left: Formation Board -->
+        <section class="formation-editor">
+          <h2 class="section-title">FORMATION & POSITIONING</h2>
+
+          <!-- Formation selector -->
+          <div class="formation-controls">
+            <label for="formation-select" class="control-label">FORMATION:</label>
+            <select id="formation-select" class="formation-dropdown">
+              <option value="4-3-3">4-3-3</option>
+              <option value="3-5-2">3-5-2</option>
+              <option value="5-3-2">5-3-2</option>
+              <option value="4-4-2">4-4-2</option>
+              <option value="3-4-3">3-4-3</option>
+            </select>
+          </div>
+
+          <!-- Formation board -->
+          <div id="formation-board-interactive" class="formation-board-container">
+            <!-- FormationBoard component inserted here -->
+          </div>
+
+          <!-- Tactical instructions -->
+          <div class="tactical-controls">
+            <label for="tactical-select" class="control-label">TACTICS:</label>
+            <select id="tactical-select" class="tactics-dropdown">
+              <option value="defensive">Defensive</option>
+              <option value="balanced" selected>Balanced</option>
+              <option value="attacking">Attacking</option>
+              <option value="counter">Counter Attack</option>
+            </select>
+          </div>
+
+          <!-- Defensive level slider -->
+          <div class="defensive-control">
+            <label for="defensive-slider" class="control-label">
+              DEFENSIVE LEVEL:
+              <span id="defensive-value" class="value">50</span>
+            </label>
+            <input
+              type="range"
+              id="defensive-slider"
+              class="defensive-slider"
+              min="0"
+              max="100"
+              value="50"
+            >
+            <div class="defensive-labels">
+              <span>Attacking</span>
+              <span>Balanced</span>
+              <span>Defensive</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Right: Player Selection Panel -->
+        <aside class="player-panel">
+          <h2 class="section-title">PLAYER POOL</h2>
+
+          <!-- Player count -->
+          <div class="player-counter">
+            <span id="selected-players">0</span> / 11 Selected
+          </div>
+
+          <!-- Player filter -->
+          <div class="player-filter">
+            <input
+              type="search"
+              id="player-search"
+              class="search-input"
+              placeholder="Search players..."
+            />
+          </div>
+
+          <!-- Players by position -->
+          <div id="players-list" class="players-container">
+            <!-- PlayerCard components inserted here -->
+          </div>
+
+          <!-- Summary section -->
+          <div class="summary-section">
+            <div class="summary-stat">
+              <span class="label">Avg Rating:</span>
+              <span id="summary-rating" class="value">0.0</span>
+            </div>
+            <div class="summary-stat">
+              <span class="label">Avg Fitness:</span>
+              <span id="summary-fitness" class="value">0%</span>
+            </div>
+            <div class="summary-stat">
+              <span class="label">Budget Used:</span>
+              <span id="summary-budget" class="value">0.0M</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Action buttons -->
+      <section class="action-buttons">
+        <button class="btn btn-secondary" id="clear-lineup-btn">CLEAR SELECTION</button>
+        <button class="btn btn-secondary" id="preset-btn">LOAD PRESET</button>
+        <button class="btn btn-primary" id="confirm-lineup-btn">CONFIRM & SAVE</button>
+      </section>
+
+      <!-- Validation messages -->
+      <div id="validation-messages" class="validation-messages"></div>
+    </main>
+  </div>
+
+  <script type="module" src="/src/pages/escalacao/escalacao.js"></script>
+</body>
+</html>

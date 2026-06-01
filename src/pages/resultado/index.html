@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Match Results - Cartola Elifoot</title>
+  <link rel="stylesheet" href="/public/css/_variables.css">
+  <link rel="stylesheet" href="/public/css/main.css">
+  <link rel="stylesheet" href="/src/shared/styles/responsive.css">
+  <link rel="stylesheet" href="/src/pages/resultado/resultado.module.css">
+</head>
+<body>
+  <div id="app">
+    <div id="header-root"></div>
+
+    <main class="resultado-container">
+      <section class="result-header">
+        <h1>MATCH RESULT</h1>
+      </section>
+
+      <!-- Final Score -->
+      <section class="final-score">
+        <div class="team-result">
+          <div class="team-name" id="home-team">Team A</div>
+          <div class="score" id="home-score">0</div>
+        </div>
+        <div class="result-status" id="result-status">FINAL</div>
+        <div class="team-result">
+          <div class="score" id="away-score">0</div>
+          <div class="team-name" id="away-team">Team B</div>
+        </div>
+      </section>
+
+      <!-- Goal Details -->
+      <section class="goal-details">
+        <h2 class="section-title">GOAL SCORERS</h2>
+        <div id="goals-list" class="goals-container">
+          <!-- Goal details inserted here -->
+        </div>
+      </section>
+
+      <div class="resultado-grid">
+        <!-- Left: Statistics -->
+        <section class="stats-section">
+          <h2 class="section-title">MATCH STATISTICS</h2>
+          <div id="stats-comparison" class="stats-table">
+            <!-- Stats comparison inserted here -->
+          </div>
+        </section>
+
+        <!-- Right: Timeline -->
+        <section class="timeline-section">
+          <h2 class="section-title">MATCH TIMELINE</h2>
+          <div id="full-timeline" class="timeline-container">
+            <!-- Full match timeline inserted here -->
+          </div>
+        </section>
+      </div>
+
+      <!-- Top Performers -->
+      <section class="top-performers">
+        <h2 class="section-title">PLAYER PERFORMANCES</h2>
+        <div id="players-performance" class="performance-grid">
+          <!-- Player cards inserted here -->
+        </div>
+      </section>
+
+      <!-- Next Match Preview -->
+      <section class="next-match">
+        <h2 class="section-title">NEXT MATCH</h2>
+        <div id="next-match-card" class="match-preview">
+          <!-- Next match card inserted here -->
+        </div>
+      </section>
+
+      <!-- Action Buttons -->
+      <section class="action-buttons">
+        <button class="btn btn-secondary" id="share-btn">SHARE</button>
+        <button class="btn btn-secondary" id="stats-btn">DETAILED STATS</button>
+        <button class="btn btn-primary" id="league-btn">GO TO LEAGUE</button>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="/src/pages/resultado/resultado.js"></script>
+</body>
+</html>

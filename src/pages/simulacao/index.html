@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Match - Cartola Elifoot</title>
+  <link rel="stylesheet" href="/public/css/_variables.css">
+  <link rel="stylesheet" href="/public/css/main.css">
+  <link rel="stylesheet" href="/src/shared/styles/responsive.css">
+  <link rel="stylesheet" href="/src/pages/simulacao/simulacao.module.css">
+</head>
+<body>
+  <div id="app">
+    <div id="header-root"></div>
+
+    <main class="simulacao-container">
+      <section class="match-header">
+        <h1>LIVE MATCH</h1>
+        <div class="match-info">
+          <span id="match-status" class="status-badge">LIVE</span>
+          <span id="match-minute" class="minute-display">45'</span>
+        </div>
+      </section>
+
+      <!-- Score Display -->
+      <section class="score-display">
+        <div class="team-score">
+          <div class="team-name" id="home-team">Team A</div>
+          <div class="score" id="home-score">0</div>
+        </div>
+        <div class="vs">VS</div>
+        <div class="team-score">
+          <div class="score" id="away-score">0</div>
+          <div class="team-name" id="away-team">Team B</div>
+        </div>
+      </section>
+
+      <!-- Progress Bar -->
+      <section class="match-progress">
+        <div class="progress-bar">
+          <div id="progress-fill" class="progress-fill"></div>
+        </div>
+        <div class="time-info">
+          <span id="elapsed-time">0m</span>
+          <span id="estimated-finish">90m</span>
+        </div>
+      </section>
+
+      <div class="simulacao-grid">
+        <!-- Left: Statistics -->
+        <section class="statistics-section">
+          <h2 class="section-title">MATCH STATISTICS</h2>
+          <div id="stats-panel" class="stats-table">
+            <!-- StatPanel component inserted here -->
+          </div>
+        </section>
+
+        <!-- Right: Timeline -->
+        <section class="timeline-section">
+          <h2 class="section-title">MATCH EVENTS</h2>
+          <div id="match-timeline" class="timeline-container">
+            <!-- MatchTimeline component inserted here -->
+          </div>
+        </section>
+      </div>
+
+      <!-- Top Performers -->
+      <section class="top-performers">
+        <h2 class="section-title">TOP PERFORMERS</h2>
+        <div id="performers-list" class="performers-container">
+          <!-- PlayerCard components inserted here -->
+        </div>
+      </section>
+
+      <!-- Match Controls -->
+      <section class="match-controls">
+        <button class="btn btn-secondary" id="pause-btn">PAUSE</button>
+        <button class="btn btn-secondary" id="skip-btn">SKIP TO END</button>
+        <button class="btn btn-secondary" id="back-btn">BACK TO DASHBOARD</button>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="/src/pages/simulacao/simulacao.js"></script>
+</body>
+</html>

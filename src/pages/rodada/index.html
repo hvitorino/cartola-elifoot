@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Season Dashboard - Cartola Elifoot</title>
+  <link rel="stylesheet" href="/public/css/_variables.css">
+  <link rel="stylesheet" href="/public/css/main.css">
+  <link rel="stylesheet" href="/src/shared/styles/responsive.css">
+  <link rel="stylesheet" href="/src/pages/rodada/rodada.module.css">
+</head>
+<body>
+  <div id="app">
+    <div id="header-root"></div>
+
+    <main class="rodada-container">
+      <section class="season-header">
+        <h1>LEAGUE STANDINGS</h1>
+        <p class="subtitle">Season 2024/25 - Complete standings and statistics</p>
+      </section>
+
+      <!-- Standings Controls -->
+      <section class="standings-controls">
+        <div class="sort-controls">
+          <button class="sort-btn active" id="sort-points">By Points</button>
+          <button class="sort-btn" id="sort-form">By Form</button>
+          <button class="sort-btn" id="sort-win">By Win %</button>
+        </div>
+        <div class="filter-controls">
+          <input
+            type="search"
+            id="team-search"
+            class="search-input"
+            placeholder="Search teams..."
+          />
+        </div>
+      </section>
+
+      <!-- League Legend -->
+      <section class="legend-section">
+        <div class="legend-item champion">
+          <span class="legend-color"></span>
+          <span>Champion</span>
+        </div>
+        <div class="legend-item european">
+          <span class="legend-color"></span>
+          <span>European Places</span>
+        </div>
+        <div class="legend-item playoffs">
+          <span class="legend-color"></span>
+          <span>Playoff Places</span>
+        </div>
+        <div class="legend-item relegation">
+          <span class="legend-color"></span>
+          <span>Relegation Zone</span>
+        </div>
+      </section>
+
+      <!-- Standings Table -->
+      <section class="standings-section">
+        <h2 class="section-title">ALL TEAMS</h2>
+        <div id="standings-table" class="table-wrapper">
+          <!-- StandingsTable component inserted here -->
+        </div>
+      </section>
+
+      <!-- Recent Results -->
+      <section class="recent-section">
+        <h2 class="section-title">RECENT RESULTS</h2>
+        <div id="recent-results" class="carousel-container">
+          <!-- Recent match cards inserted here -->
+        </div>
+      </section>
+
+      <!-- Upcoming Fixtures -->
+      <section class="upcoming-section">
+        <h2 class="section-title">UPCOMING FIXTURES</h2>
+        <div id="upcoming-fixtures" class="carousel-container">
+          <!-- Upcoming match cards inserted here -->
+        </div>
+      </section>
+
+      <!-- Season Statistics -->
+      <section class="season-stats">
+        <h2 class="section-title">SEASON STATISTICS</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Total Matches</div>
+            <div class="stat-value" id="total-matches">380</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Total Goals</div>
+            <div class="stat-value" id="total-goals">850</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Avg Goals/Match</div>
+            <div class="stat-value" id="avg-goals">2.24</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Top Scorer</div>
+            <div class="stat-value" id="top-scorer">25</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Action Buttons -->
+      <section class="action-buttons">
+        <button class="btn btn-secondary" id="export-btn">EXPORT CSV</button>
+        <button class="btn btn-secondary" id="print-btn">PRINT TABLE</button>
+        <button class="btn btn-primary" id="back-btn">BACK TO DASHBOARD</button>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="/src/pages/rodada/rodada.js"></script>
+</body>
+</html>

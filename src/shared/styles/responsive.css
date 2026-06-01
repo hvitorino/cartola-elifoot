@@ -1,0 +1,150 @@
+/* Layout Grid System */
+:root {
+  --grid-mobile: 1;
+  --grid-tablet: 2;
+  --grid-desktop: 3;
+
+  --spacing-unit: 8px;
+  --spacing-1: calc(var(--spacing-unit) * 1);
+  --spacing-2: calc(var(--spacing-unit) * 2);
+  --spacing-3: calc(var(--spacing-unit) * 3);
+  --spacing-4: calc(var(--spacing-unit) * 4);
+  --spacing-5: calc(var(--spacing-unit) * 5);
+  --spacing-6: calc(var(--spacing-unit) * 6);
+  --spacing-8: calc(var(--spacing-unit) * 8);
+  --spacing-12: calc(var(--spacing-unit) * 12);
+  --spacing-16: calc(var(--spacing-unit) * 16);
+  --spacing-24: calc(var(--spacing-unit) * 24);
+  --spacing-32: calc(var(--spacing-unit) * 32);
+}
+
+/* Mobile-first base styles */
+@media (max-width: 767px) {
+  :root {
+    --current-grid: var(--grid-mobile);
+    --font-scale: 0.75;
+  }
+
+  /* Single column layouts */
+  .grid-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-16);
+  }
+
+  /* Stack sections vertically */
+  .section-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-12);
+  }
+
+  /* Full-width cards */
+  .card {
+    width: 100%;
+  }
+
+  /* Responsive font sizes */
+  h1 { font-size: 24px; }
+  h2 { font-size: 18px; }
+  h3 { font-size: 16px; }
+  body { font-size: 12px; }
+
+  /* Touch-friendly buttons */
+  button {
+    min-height: 44px;
+    padding: var(--spacing-3) var(--spacing-4);
+  }
+
+  /* Horizontal scroll for tables */
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Tablet (768px+) */
+@media (min-width: 768px) {
+  :root {
+    --current-grid: var(--grid-tablet);
+    --font-scale: 0.88;
+  }
+
+  .grid-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .section-row {
+    flex-direction: row;
+  }
+
+  h1 { font-size: 28px; }
+  h2 { font-size: 20px; }
+  h3 { font-size: 16px; }
+  body { font-size: 13px; }
+}
+
+/* Desktop (1440px+) */
+@media (min-width: 1440px) {
+  :root {
+    --current-grid: var(--grid-desktop);
+    --font-scale: 1;
+  }
+
+  .grid-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  h1 { font-size: 32px; }
+  h2 { font-size: 24px; }
+  h3 { font-size: 18px; }
+  body { font-size: 14px; }
+}
+
+/* Respect motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Responsive utilities */
+.hide-mobile { display: none; }
+@media (min-width: 768px) {
+  .hide-mobile { display: block; }
+}
+
+.show-mobile { display: block; }
+@media (min-width: 768px) {
+  .show-mobile { display: none; }
+}
+
+/* Sticky positioning */
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.sticky-column {
+  position: sticky;
+  left: 0;
+  z-index: 5;
+}
+
+/* Container queries for responsive components */
+@supports (container-type: inline-size) {
+  .card-container {
+    container-type: inline-size;
+  }
+
+  @container (max-width: 480px) {
+    .card-columns { grid-template-columns: 1fr; }
+  }
+
+  @container (min-width: 480px) {
+    .card-columns { grid-template-columns: 1fr 1fr; }
+  }
+}
