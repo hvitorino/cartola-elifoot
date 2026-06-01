@@ -1,0 +1,16 @@
+node_modules
+.git
+.vercel
+.next
+dist
+build
+coverage
+.bak
+*.test.js
+jest.config.js
+test-*.log
+.pipeline
+.tests
+tests
+public/*.bak
+package-lock.json
