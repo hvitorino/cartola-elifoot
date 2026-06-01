@@ -1,0 +1,411 @@
+/**
+ * Mobile-first responsive design
+ * Breakpoints: mobile (default), tablet (768px+), desktop (1024px+), large desktop (1440px+)
+ */
+
+/* Mobile-first base (assumed in main style.css) */
+
+/* Standings table - mobile friendly */
+.standings-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  background: white;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.standings-table thead {
+  background: #667eea;
+  color: white;
+  font-weight: bold;
+}
+
+.standings-table th,
+.standings-table td {
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+.standings-table th:first-child,
+.standings-table td:first-child {
+  text-align: left;
+  padding-left: 1rem;
+}
+
+.standings-table tbody tr {
+  transition: background 0.2s;
+}
+
+.standings-table tbody tr:hover {
+  background: #f9f9f9;
+}
+
+.standings-table tbody tr.current-club {
+  background: #f0f4ff;
+  font-weight: bold;
+  border-left: 4px solid #667eea;
+}
+
+/* Historia cards - mobile stack */
+.historia-card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.historia-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.historia-card .round {
+  font-weight: bold;
+  color: #667eea;
+}
+
+.historia-card .resultado {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+.historia-card .resultado.win {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.historia-card .resultado.loss {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.historia-card .resultado.draw {
+  background: #fef3c7;
+  color: #78350f;
+}
+
+.historia-card-score {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.historia-card-score .team {
+  flex: 1;
+  text-align: center;
+}
+
+.historia-card-score .team-name {
+  display: block;
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.25rem;
+}
+
+.historia-card-score .score {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #667eea;
+  margin: 0 1rem;
+}
+
+.historia-card-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  font-size: 0.85rem;
+}
+
+.historia-card-stats .stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.historia-card-stats .label {
+  color: #999;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.historia-card-stats .value {
+  font-weight: bold;
+  color: #333;
+}
+
+/* Standings grid - responsive layout */
+.standings-grid {
+  display: grid;
+  gap: 2rem;
+}
+
+.standings-container,
+.stats-container,
+.historia-container {
+  background: white;
+  border-radius: 6px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.stats-summary {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.stat-box {
+  background: #f5f5f5;
+  border-radius: 6px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.stat-box .label {
+  font-size: 0.75rem;
+  color: #999;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.stat-box .value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #667eea;
+}
+
+/* Tablet (768px+) */
+@media (min-width: 768px) {
+  .container {
+    padding: 2rem;
+    max-width: 100%;
+  }
+
+  .standings-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+  }
+
+  .standings-table {
+    font-size: 0.95rem;
+  }
+
+  .standings-table th,
+  .standings-table td {
+    padding: 0.85rem 0.6rem;
+  }
+
+  .historia-card {
+    margin-bottom: 1.5rem;
+  }
+
+  .stats-summary {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .historia-timeline {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .historia-timeline .historia-card {
+    margin-bottom: 0;
+  }
+}
+
+/* Desktop (1024px+) */
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1200px;
+    padding: 2rem;
+  }
+
+  .standings-grid {
+    grid-template-columns: 2fr 1fr 1fr;
+  }
+
+  .standings-table {
+    font-size: 1rem;
+  }
+
+  .standings-table th,
+  .standings-table td {
+    padding: 1rem 0.75rem;
+  }
+
+  .stats-summary {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .historia-timeline {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .standings-container,
+  .stats-container,
+  .historia-container {
+    padding: 2rem;
+  }
+}
+
+/* Large Desktop (1440px+) */
+@media (min-width: 1440px) {
+  .container {
+    max-width: 1400px;
+  }
+
+  .standings-table {
+    font-size: 1.05rem;
+  }
+
+  .standings-table th,
+  .standings-table td {
+    padding: 1rem 1rem;
+  }
+}
+
+/* Touch-friendly spacing for mobile devices */
+@media (hover: none) {
+  button {
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+    min-height: 44px;
+  }
+
+  .player-card {
+    padding: 1rem;
+  }
+
+  .historia-card {
+    padding: 1.25rem;
+  }
+
+  .standings-table th,
+  .standings-table td {
+    padding: 1rem 0.75rem;
+  }
+
+  /* Ensure minimum tap target size (44px) */
+  a,
+  button,
+  input[type="checkbox"],
+  input[type="radio"] {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #1a1a1a;
+    color: #fff;
+  }
+
+  .card,
+  .standings-container,
+  .stats-container,
+  .historia-container,
+  .historia-card,
+  .standings-table {
+    background: #2a2a2a;
+    border-color: #444;
+  }
+
+  .standings-table thead {
+    background: #667eea;
+  }
+
+  .standings-table tbody tr.current-club {
+    background: #3a3a5a;
+  }
+
+  .standings-table tbody tr:hover {
+    background: #333;
+  }
+
+  .stat-box {
+    background: #333;
+  }
+
+  .historia-card-header {
+    border-bottom-color: #444;
+  }
+
+  .historia-card-stats .label {
+    color: #aaa;
+  }
+
+  .historia-card .team-name {
+    color: #bbb;
+  }
+
+  .historia-card-score .score {
+    color: #9ca3ff;
+  }
+}
+
+/* Orientation: Landscape on small devices */
+@media (max-height: 600px) and (orientation: landscape) {
+  header {
+    padding: 0.5rem;
+  }
+
+  .container {
+    padding: 0.75rem;
+  }
+
+  .standings-container,
+  .stats-container,
+  .historia-container {
+    padding: 1rem;
+  }
+
+  .standings-table th,
+  .standings-table td {
+    padding: 0.5rem 0.4rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* Very small screens (max 360px) */
+@media (max-width: 360px) {
+  .container {
+    padding: 0.75rem;
+  }
+
+  .standings-table {
+    font-size: 0.8rem;
+  }
+
+  .standings-table th,
+  .standings-table td {
+    padding: 0.5rem 0.3rem;
+  }
+
+  .historia-card-score .score {
+    font-size: 1.2rem;
+  }
+
+  .historia-card-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-summary {
+    grid-template-columns: 2fr;
+  }
+}

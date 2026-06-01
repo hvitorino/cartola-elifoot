@@ -17,6 +17,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const CARTOLA_API = 'https://api.cartola.globo.com';
 const FETCH_TIMEOUT = 5000; // 5 seconds
+const CACHE_TIMEOUT = 3600000; // 1 hour
+
+// Cache for /api/atletas/mercado
+let cachedPlayers = null;
+let cacheTimestamp = null;
 
 /**
  * Wrapper to fetch with timeout and error handling
@@ -57,13 +62,25 @@ app.get('/api/clubes', async (req, res) => {
 /**
  * GET /api/atletas/mercado
  * Proxy to Cartola API - get all available players in current market
+ * (with caching to reduce API load)
  */
 app.get('/api/atletas/mercado', async (req, res) => {
+  // Return cached if fresh
+  if (cachedPlayers && Date.now() - cacheTimestamp < CACHE_TIMEOUT) {
+    return res.json(cachedPlayers);
+  }
+
   try {
     const data = await fetchWithTimeout(`${CARTOLA_API}/atletas/mercado`);
+    cachedPlayers = data;
+    cacheTimestamp = Date.now();
     res.json(data);
   } catch (err) {
     console.error('Error fetching atletas/mercado:', err.message);
+    if (cachedPlayers) {
+      // Return stale cache on error
+      return res.json(cachedPlayers);
+    }
     res.status(502).json({ error: 'Failed to fetch players', message: err.message });
   }
 });
@@ -94,6 +111,27 @@ app.get('/api/pos-rodada/destaques', async (req, res) => {
   } catch (err) {
     console.error('Error fetching pos-rodada/destaques:', err.message);
     res.status(502).json({ error: 'Failed to fetch highlights', message: err.message });
+  }
+});
+
+/**
+ * GET /api/classificacao
+ * Proxy to Cartola API - league standings
+ */
+app.get('/api/classificacao', async (req, res) => {
+  try {
+    const data = await fetchWithTimeout(`${CARTOLA_API}/classificacao`);
+    res.json(data);
+  } catch (err) {
+    console.error('Error fetching classificacao:', err.message);
+    // Return fallback standings from data file
+    try {
+      const fallback = await import('./public/data/tabela-inicial.json', { assert: { type: 'json' } });
+      return res.json(fallback.default);
+    } catch (fallbackErr) {
+      console.error('Error loading fallback standings:', fallbackErr.message);
+      res.status(502).json({ error: 'Failed to fetch standings', message: err.message });
+    }
   }
 });
 

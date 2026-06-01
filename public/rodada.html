@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rodada - Cartola Elifoot</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <h1>Rodada Dashboard</h1>
+    <nav style="margin-top: 0.5rem;">
+      <a href="index.html" style="color: white; margin: 0 1rem; text-decoration: none;">Home</a>
+      <a href="escalacao.html" style="color: white; margin: 0 1rem; text-decoration: none;">Escalação</a>
+      <a href="simulacao.html" style="color: white; margin: 0 1rem; text-decoration: none;">Simulação</a>
+      <a href="resultado.html" style="color: white; margin: 0 1rem; text-decoration: none;">Resultado</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <!-- Current Round Info -->
+    <div style="background: white; border-radius: 6px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+      <h2>Rodada <span id="rodadaNum">1</span></h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+        <div>
+          <h3 style="margin-top: 0; color: #999; font-size: 0.85rem; text-transform: uppercase;">Próximo Adversário</h3>
+          <p id="proximoAdversario" style="font-size: 1.2rem; font-weight: bold; margin: 0.5rem 0;">Carregando...</p>
+          <p id="proximaPosicao" style="font-size: 0.9rem; color: #666; margin: 0;">-</p>
+        </div>
+        <div>
+          <h3 style="margin-top: 0; color: #999; font-size: 0.85rem; text-transform: uppercase;">Sua Posição</h3>
+          <p id="minhaposicao" style="font-size: 1.2rem; font-weight: bold; margin: 0.5rem 0;">-</p>
+          <p id="meuClube" style="font-size: 0.9rem; color: #666; margin: 0;">-</p>
+        </div>
+        <div>
+          <button onclick="window.location.href='escalacao.html'" style="width: 100%; margin-top: 2rem;">Ir para Escalação</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="standings-grid">
+      <!-- Standings -->
+      <div class="standings-container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <h2 style="margin: 0;">Classificação</h2>
+          <button id="btnRefresh" onclick="atualizarClassificacao()" style="padding: 0.5rem 1rem; font-size: 0.9rem;">↻ Atualizar</button>
+        </div>
+        <div id="tabelaContainer" style="overflow-x: auto;">
+          <p>Carregando classificação...</p>
+        </div>
+        <p id="ultimaAtualizacao" style="font-size: 0.8rem; color: #999; margin-top: 1rem;">-</p>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-container">
+        <h2 style="margin-top: 0;">Estatísticas da Temporada</h2>
+        <div class="stats-summary">
+          <div class="stat-box">
+            <div class="label">Vitórias</div>
+            <div class="value" id="statVitorias">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="label">Empates</div>
+            <div class="value" id="statEmpates">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="label">Derrotas</div>
+            <div class="value" id="statDerrotas">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="label">Saldo</div>
+            <div class="value" id="statSaldo">0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- History Timeline -->
+    <div class="historia-container" style="margin-top: 2rem;">
+      <h2>Histórico de Partidas</h2>
+      <div id="historicoContainer">
+        <p>Nenhuma partida jogada ainda.</p>
+      </div>
+      <div style="margin-top: 1rem; text-align: center;">
+        <a href="resultado.html" style="color: #667eea; text-decoration: none; font-weight: bold;">Ver histórico completo →</a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import * as standings from './js/standings.js';
+    import * as historico from './js/historico.js';
+    import * as estado from './js/estado.js';
+
+    let estadoAtual = null;
+
+    async function inicializar() {
+      try {
+        // Get current state
+        estadoAtual = estado.getEstado();
+
+        // Update round number
+        document.getElementById('rodadaNum').textContent = estadoAtual.rodadaAtual || 1;
+
+        // Load standings
+        await atualizarClassificacao();
+
+        // Load history
+        const hist = historico.obterHistoricoCompleto();
+        const ultimas5 = historico.obterUltimosResultados(5);
+        if (ultimas5.length > 0) {
+          const container = document.getElementById('historicoContainer');
+          historico.renderTimelineHistorico(container, ultimas5);
+        }
+
+        // Calculate and display season stats
+        const stats = historico.calcularEstatisticasSeason(hist);
+        document.getElementById('statVitorias').textContent = stats.vitorias || 0;
+        document.getElementById('statEmpates').textContent = stats.empates || 0;
+        document.getElementById('statDerrotas').textContent = stats.derrotas || 0;
+        document.getElementById('statSaldo').textContent = stats.saldo || 0;
+
+        // Load my club info
+        if (estadoAtual.clubeId) {
+          document.getElementById('meuClube').textContent = 'Seu time';
+        }
+
+        // Pick random next opponent from standings
+        atualizarProximoAdversario();
+      } catch (err) {
+        console.error('Erro ao inicializar rodada:', err);
+      }
+    }
+
+    function atualizarProximoAdversario() {
+      if (estadoAtual.tabela && estadoAtual.tabela.length > 0) {
+        const clube = estadoAtual.tabela[Math.floor(Math.random() * estadoAtual.tabela.length)];
+        document.getElementById('proximoAdversario').textContent = clube.nome_clube || 'Desconhecido';
+        document.getElementById('proximaPosicao').textContent = `Posição: ${clube.posicao}º (${clube.pontos} pts)`;
+      }
+
+      // Show current position
+      if (estadoAtual.clubeId && estadoAtual.tabela) {
+        const meuClube = estadoAtual.tabela.find(c => c.clube_id === estadoAtual.clubeId);
+        if (meuClube) {
+          document.getElementById('minhaposicao').textContent = `${meuClube.posicao}º`;
+          document.getElementById('meuClube').textContent = meuClube.nome_clube;
+        }
+      }
+    }
+
+    window.atualizarClassificacao = async function () {
+      try {
+        document.getElementById('btnRefresh').disabled = true;
+        const tabela = await standings.obterTabelaClassificacao();
+        estado.atualizarTabela(tabela);
+
+        // Update local state
+        estadoAtual = estado.getEstado();
+
+        const container = document.getElementById('tabelaContainer');
+        standings.renderTabelaClassificacao(tabela, estadoAtual.clubeId, container);
+
+        const agora = new Date().toLocaleString('pt-BR');
+        document.getElementById('ultimaAtualizacao').textContent = `Atualizado em ${agora}`;
+
+        atualizarProximoAdversario();
+      } catch (err) {
+        console.error('Erro ao atualizar classificação:', err);
+        alert('Erro ao atualizar classificação');
+      } finally {
+        document.getElementById('btnRefresh').disabled = false;
+      }
+    };
+
+    // Initialize on load
+    inicializar();
+  </script>
+</body>
+</html>

@@ -15,7 +15,15 @@ export function estadoInicial() {
     escalacaoAtual: [],
     esquemaTatico: '4-4-2',
     tabela: [],
-    historico: []
+    historico: [],
+    dataUltimaAtualizacaoTabela: null,
+    estatisticas: {
+      vitorias: 0,
+      derrotas: 0,
+      empates: 0,
+      gols_pro: 0,
+      gols_contra: 0
+    }
   };
 }
 
@@ -85,4 +93,53 @@ export function ultimoResultado() {
     return estado.historico[estado.historico.length - 1];
   }
   return null;
+}
+
+/**
+ * Update standings table
+ * @param {Array<Object>} novaTabela
+ */
+export function atualizarTabela(novaTabela) {
+  setEstado({
+    tabela: novaTabela,
+    dataUltimaAtualizacaoTabela: new Date().toISOString()
+  });
+}
+
+/**
+ * Get cached standings or fetch if stale (>30 min)
+ * @param {Function} fetchFunc - Function to fetch standings
+ * @param {Boolean} forceRefresh - Force refresh even if cached
+ * @returns {Promise<Array<Object>>}
+ */
+export async function obterTabelaAtualizada(fetchFunc, forceRefresh = false) {
+  const current = getEstado();
+  const agora = new Date().getTime();
+  const ultimaData = current.dataUltimaAtualizacaoTabela
+    ? new Date(current.dataUltimaAtualizacaoTabela).getTime()
+    : 0;
+  const meia_hora = 30 * 60 * 1000;
+
+  if (!forceRefresh && current.tabela?.length > 0 && agora - ultimaData < meia_hora) {
+    return current.tabela;
+  }
+
+  // Fetch new standings
+  const novaTabela = await fetchFunc();
+  atualizarTabela(novaTabela);
+  return novaTabela;
+}
+
+/**
+ * Update season statistics
+ * @param {Object} novasEstatisticas
+ */
+export function atualizarEstatisticas(novasEstatisticas) {
+  const current = getEstado();
+  setEstado({
+    estatisticas: {
+      ...current.estatisticas,
+      ...novasEstatisticas
+    }
+  });
 }
