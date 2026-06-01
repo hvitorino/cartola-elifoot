@@ -1,0 +1,423 @@
+/*
+  CARTOLA ELIFOOT ANIMATIONS
+
+  All motion uses the design system transition timings:
+  - Fast: 150ms (micro-interactions)
+  - Base: 200ms (state changes)
+  - Slow: 300ms (page transitions)
+  - Slower: 400ms (complex animations)
+*/
+
+/* ========================================
+   FADE ANIMATIONS
+   ======================================== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.fade-in {
+  animation: fadeIn var(--transition-slow) ease-out forwards;
+}
+
+.fade-out {
+  animation: fadeOut var(--transition-slow) ease-out forwards;
+}
+
+/* ========================================
+   SLIDE ANIMATIONS
+   ======================================== */
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutDown {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.slide-in-up {
+  animation: slideInUp var(--transition-slow) ease-out forwards;
+}
+
+.slide-in-down {
+  animation: slideInDown var(--transition-slow) ease-out forwards;
+}
+
+.slide-in-left {
+  animation: slideInLeft var(--transition-slow) ease-out forwards;
+}
+
+.slide-in-right {
+  animation: slideInRight var(--transition-slow) ease-out forwards;
+}
+
+/* ========================================
+   SCALE ANIMATIONS
+   ======================================== */
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleBounce {
+  0% {
+    transform: scale(0.95);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.scale-in {
+  animation: scaleIn var(--transition-slow) ease-out forwards;
+}
+
+.scale-bounce {
+  animation: scaleBounce 400ms cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+/* ========================================
+   PULSE ANIMATIONS (Status Alerts)
+   ======================================== */
+
+@keyframes pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 92, 92, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(255, 92, 92, 0);
+  }
+}
+
+@keyframes pulse-success {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(107, 191, 89, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(107, 191, 89, 0);
+  }
+}
+
+@keyframes pulse-warning {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 184, 77, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(255, 184, 77, 0);
+  }
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+.pulse-success {
+  animation: pulse-success 2s infinite;
+}
+
+.pulse-warning {
+  animation: pulse-warning 2s infinite;
+}
+
+/* ========================================
+   ROTATION ANIMATIONS
+   ======================================== */
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spinReverse {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+.spin-reverse {
+  animation: spinReverse 1s linear infinite;
+}
+
+/* ========================================
+   PROGRESS ANIMATIONS
+   ======================================== */
+
+@keyframes progress-fill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.progress-fill {
+  animation: progress-fill 45s linear forwards;
+}
+
+.progress-fill-quick {
+  animation: progress-fill 1.5s ease-out forwards;
+}
+
+/* ========================================
+   SHIMMER ANIMATION (Loading)
+   ======================================== */
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--dark-bg-secondary) 0%,
+    var(--dark-bg-tertiary) 50%,
+    var(--dark-bg-secondary) 100%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* ========================================
+   BOUNCE ANIMATIONS
+   ======================================== */
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.bounce {
+  animation: bounce 1s ease-in-out infinite;
+}
+
+/* ========================================
+   FLIP ANIMATION
+   ======================================== */
+
+@keyframes flip {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(360deg);
+  }
+}
+
+.flip {
+  animation: flip 600ms ease-out forwards;
+}
+
+/* ========================================
+   STAGGER ANIMATION (For Lists)
+   ======================================== */
+
+@keyframes stagger {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stagger-item {
+  animation: stagger var(--transition-slow) ease-out forwards;
+}
+
+.stagger-item:nth-child(1) {
+  animation-delay: 0ms;
+}
+
+.stagger-item:nth-child(2) {
+  animation-delay: 50ms;
+}
+
+.stagger-item:nth-child(3) {
+  animation-delay: 100ms;
+}
+
+.stagger-item:nth-child(4) {
+  animation-delay: 150ms;
+}
+
+.stagger-item:nth-child(5) {
+  animation-delay: 200ms;
+}
+
+.stagger-item:nth-child(n + 6) {
+  animation-delay: calc((var(--index, 5)) * 50ms);
+}
+
+/* ========================================
+   TRANSITION HELPER CLASSES
+   ======================================== */
+
+.transition-all {
+  transition: var(--transition-all);
+}
+
+.transition-colors {
+  transition: var(--transition-colors);
+}
+
+.transition-transform {
+  transition: var(--transition-transform);
+}
+
+.transition-shadow {
+  transition: var(--transition-shadow);
+}
+
+.transition-fast {
+  transition: all var(--transition-fast);
+}
+
+.transition-base {
+  transition: all var(--transition-base);
+}
+
+.transition-slow {
+  transition: all var(--transition-slow);
+}
+
+/* ========================================
+   HOVER ANIMATIONS
+   ======================================== */
+
+.hover-scale {
+  transition: var(--transition-transform);
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+.hover-shadow {
+  transition: var(--transition-shadow);
+}
+
+.hover-shadow:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.hover-lift {
+  transition: var(--transition-all);
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ========================================
+   DISABLE ANIMATIONS (Accessibility)
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

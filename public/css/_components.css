@@ -1,0 +1,409 @@
+/*
+  CARTOLA ELIFOOT BASE COMPONENTS
+
+  Base styles for common components:
+  - Cards
+  - Buttons
+  - Inputs
+  - Badges
+  - Progress bars
+*/
+
+/* ========================================
+   CARD COMPONENT
+   ======================================== */
+
+.card {
+  background-color: var(--dark-bg-primary);
+  border: var(--border-1px);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-all);
+}
+
+.card:hover {
+  background-color: var(--dark-bg-secondary);
+  box-shadow: var(--shadow-md);
+}
+
+.card.elevated {
+  background-color: var(--dark-bg-elevated);
+  box-shadow: var(--shadow-md);
+}
+
+.card.selected {
+  border: var(--border-accent);
+  box-shadow: var(--shadow-accent-lg);
+}
+
+.card-compact {
+  padding: var(--space-md);
+}
+
+.card-spacious {
+  padding: var(--space-xl);
+}
+
+/* ========================================
+   BUTTON COMPONENT (Base)
+   ======================================== */
+
+button, .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--h4-size);
+  font-weight: 600;
+  font-family: var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-all);
+  white-space: nowrap;
+  user-select: none;
+
+  /* Focus state */
+  outline: none;
+}
+
+button:focus-visible, .btn:focus-visible {
+  box-shadow: var(--focus-shadow);
+}
+
+/* PRIMARY BUTTON */
+.btn-primary {
+  background-color: var(--primary-accent);
+  color: var(--text-highlight);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+  background-color: #3a8ee0;
+  box-shadow: 0 8px 16px rgba(74, 158, 255, 0.3);
+  transform: scale(1.02);
+}
+
+.btn-primary:active {
+  box-shadow: var(--shadow-inset);
+}
+
+.btn-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+/* SECONDARY BUTTON */
+.btn-secondary {
+  background-color: transparent;
+  border: 2px solid var(--primary-accent);
+  color: var(--primary-accent);
+}
+
+.btn-secondary:hover {
+  background-color: var(--dark-bg-secondary);
+  box-shadow: var(--shadow-accent-md);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* DANGER BUTTON */
+.btn-danger {
+  background-color: var(--danger-accent);
+  color: var(--text-highlight);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-danger:hover {
+  background-color: #e54747;
+  box-shadow: 0 8px 16px rgba(255, 92, 92, 0.3);
+  transform: scale(1.02);
+}
+
+.btn-danger:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* SUCCESS BUTTON */
+.btn-success {
+  background-color: var(--secondary-accent);
+  color: var(--text-highlight);
+}
+
+.btn-success:hover {
+  background-color: #5fad50;
+  box-shadow: var(--shadow-success);
+}
+
+/* BUTTON SIZES */
+.btn-sm {
+  padding: var(--space-xs) var(--space-sm);
+  font-size: 12px;
+}
+
+.btn-lg {
+  padding: var(--space-md) var(--space-lg);
+  font-size: 16px;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+/* ========================================
+   INPUT FIELDS
+   ======================================== */
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="search"],
+textarea,
+select {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--body-regular-size);
+  line-height: var(--body-regular-height);
+  font-family: var(--font-body);
+  background-color: var(--dark-bg-secondary);
+  border: var(--border-1px);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  transition: var(--transition-colors);
+  box-sizing: border-box;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* Focus state */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--primary-accent);
+  box-shadow: var(--shadow-accent-sm);
+  background-color: var(--dark-bg-primary);
+}
+
+/* Valid state */
+input:valid {
+  border-color: var(--secondary-accent);
+}
+
+/* Invalid state */
+input:invalid {
+  border-color: var(--danger-accent);
+}
+
+/* Disabled state */
+input:disabled,
+textarea:disabled,
+select:disabled {
+  background-color: var(--dark-bg-primary);
+  color: var(--text-tertiary);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ========================================
+   BADGE COMPONENT
+   ======================================== */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  font-size: var(--body-small-size);
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  background-color: var(--dark-bg-secondary);
+  color: var(--text-primary);
+}
+
+.badge-success {
+  background-color: rgba(107, 191, 89, 0.15);
+  color: var(--secondary-accent);
+}
+
+.badge-warning {
+  background-color: rgba(255, 184, 77, 0.15);
+  color: var(--warning-accent);
+}
+
+.badge-danger {
+  background-color: rgba(255, 92, 92, 0.15);
+  color: var(--danger-accent);
+}
+
+.badge-info {
+  background-color: rgba(74, 158, 255, 0.15);
+  color: var(--primary-accent);
+}
+
+/* ========================================
+   PROGRESS BAR
+   ======================================== */
+
+.progress {
+  width: 100%;
+  height: 4px;
+  background-color: var(--dark-bg-secondary);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: var(--primary-accent);
+  border-radius: var(--radius-full);
+  transition: width var(--transition-base);
+}
+
+.progress-bar-success {
+  background-color: var(--secondary-accent);
+}
+
+.progress-bar-warning {
+  background-color: var(--warning-accent);
+}
+
+.progress-bar-danger {
+  background-color: var(--danger-accent);
+}
+
+/* ========================================
+   LOADING SPINNER
+   ======================================== */
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid var(--dark-bg-secondary);
+  border-top-color: var(--primary-accent);
+  border-radius: var(--radius-full);
+  animation: spin 1s linear infinite;
+}
+
+.spinner-sm {
+  width: 16px;
+  height: 16px;
+  border-width: 2px;
+}
+
+.spinner-lg {
+  width: 32px;
+  height: 32px;
+  border-width: 4px;
+}
+
+/* ========================================
+   DIVIDER
+   ======================================== */
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background-color: var(--dark-bg-tertiary);
+  margin: var(--space-md) 0;
+}
+
+.divider-vertical {
+  width: 1px;
+  height: 100%;
+  background-color: var(--dark-bg-tertiary);
+  margin: 0 var(--space-md);
+}
+
+/* ========================================
+   SKELETON LOADER
+   ======================================== */
+
+@keyframes skeleton-loading {
+  0% {
+    background-color: var(--dark-bg-secondary);
+  }
+  50% {
+    background-color: var(--dark-bg-tertiary);
+  }
+  100% {
+    background-color: var(--dark-bg-secondary);
+  }
+}
+
+.skeleton {
+  background-color: var(--dark-bg-secondary);
+  border-radius: var(--radius-md);
+  animation: skeleton-loading 1.5s infinite;
+}
+
+.skeleton-text {
+  height: 16px;
+  margin-bottom: var(--space-sm);
+  border-radius: 2px;
+}
+
+.skeleton-title {
+  height: 24px;
+  margin-bottom: var(--space-md);
+  border-radius: 2px;
+}
+
+/* ========================================
+   ALERT/MESSAGE
+   ======================================== */
+
+.alert {
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+  border-left: 4px solid;
+}
+
+.alert-success {
+  background-color: rgba(107, 191, 89, 0.1);
+  border-color: var(--secondary-accent);
+  color: var(--secondary-accent);
+}
+
+.alert-warning {
+  background-color: rgba(255, 184, 77, 0.1);
+  border-color: var(--warning-accent);
+  color: var(--warning-accent);
+}
+
+.alert-danger {
+  background-color: rgba(255, 92, 92, 0.1);
+  border-color: var(--danger-accent);
+  color: var(--danger-accent);
+}
+
+.alert-info {
+  background-color: rgba(74, 158, 255, 0.1);
+  border-color: var(--primary-accent);
+  color: var(--primary-accent);
+}
